@@ -47,15 +47,15 @@ work: pointer to the current system work
 static void work_handler(struct work_struct *work){
     proc_node *curr, *node;
 
-    mutex_lock(&lock);
-    // Check if the PID is valid
-    list_for_each_entry_safe(curr, node, &my_head, head){
-        if(get_cpu_use(curr->pid, &curr->cpu_time)!=0){
-            list_del(&curr->head);
-            kfree(curr);
-        }
-    }
-    mutex_unlock(&lock);
+    // mutex_lock(&lock);
+    // // Check if the PID is valid
+    // list_for_each_entry_safe(curr, node, &my_head, head){
+    //     if(get_cpu_use(curr->pid, &curr->cpu_time)!=0){
+    //         list_del(&curr->head);
+    //         kfree(curr);
+    //     }
+    // }
+    // mutex_unlock(&lock);
     kfree(work);
     printk(KERN_ALERT "WORK INIT RUNNING\n");
 }
@@ -158,11 +158,11 @@ ssize_t mp2_write (struct file *filp, const char __user *buf, size_t count, loff
     new->pid = (int)pid;
 
     // if not matched, not write
-    if(get_cpu_use(new->pid, &new->cpu_time) != 0){
-        kfree(buffer);
-        kfree(new);
-        return -EFAULT;
-    }
+    // if(get_cpu_use(new->pid, &new->cpu_time) != 0){
+    //     kfree(buffer);
+    //     kfree(new);
+    //     return -EFAULT;
+    // }
 
     mutex_lock(&lock);
     INIT_LIST_HEAD(&new->head);
