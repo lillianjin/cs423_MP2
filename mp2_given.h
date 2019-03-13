@@ -4,8 +4,6 @@
 #include <linux/pid.h>
 #include <linux/sched.h>
 
-#define find_task_by_pid(nr) pid_task(find_vpid(nr), PIDTYPE_PID)
-
 struct task_struct* find_task_by_pid(unsigned int nr)
 {
     struct task_struct* task;
