@@ -41,7 +41,7 @@ typedef struct mp2_task_struct {
 // a kernel thread that is responsible for triggering the context switches as needed
 static struct task_struct *dispatch_thread;
 // current task
-mp2_task_struct *current_task = NULL;
+static mp2_task_struct *cur_task = NULL;
 // Declare proc filesystem entry
 static struct proc_dir_entry *proc_dir, *proc_entry;
 // Declare mutex lock
