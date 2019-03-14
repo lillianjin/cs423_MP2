@@ -237,6 +237,7 @@ void __exit mp2_exit(void)
         list_del(&pos->task_node);
         kfree(pos);
     }
+}
 
 // Register init and exit funtions
 module_init(mp2_init);
