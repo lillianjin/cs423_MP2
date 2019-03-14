@@ -90,7 +90,7 @@ offp: a pointer to a “long offset type” object that indicates the file posit
 ssize_t mp2_read (struct file *filp, char __user *buf, size_t count, loff_t *offp)
 {
     int copied = 0;
-    proc_node *curr;
+    mp2_task_struct *curr;
     char *buffer;
 
     // if the file is already read
@@ -142,7 +142,7 @@ offp: a pointer to a “long offset type” object that indicates the file posit
 ssize_t mp2_write (struct file *filp, const char __user *buf, size_t count, loff_t *offp)
 {
     char *buffer = (char *)kmalloc(4096, GFP_KERNEL);
-    proc_node *new;
+    mp2_task_struct *new;
     unsigned int pid;
     unsigned long period;
     unsigned long process_time;
@@ -235,7 +235,7 @@ void __exit mp2_exit(void)
     destroy_workqueue(work_queue);
 
     mutex_lock(&mutexLock);
-    proc_node *myproc, *n;
+    mp2_task_struct *pos, *next;
     // Free the linked list
     list_for_each_entry_safe(pos, next, &my_head) {
         destruct_node(pos);
