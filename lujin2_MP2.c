@@ -41,7 +41,7 @@ typedef struct mp2_task_struct {
 // a kernel thread that is responsible for triggering the context switches as needed
 static struct task_struct *dispatch_thread;
 // current task
-static mp2_task_struct *current_task = NULL;
+mp2_task_struct *current_task = NULL;
 // Declare proc filesystem entry
 static struct proc_dir_entry *proc_dir, *proc_entry;
 // Declare mutex lock
@@ -120,7 +120,7 @@ ssize_t mp2_read (struct file *filp, char __user *buf, size_t count, loff_t *off
 
     // set the end of string character with value 0 (NULL)
     buffer[copied] = '\0';
-    copied += 1
+    copied += 1;
     //Copy a block of data into user space.
     copy_to_user(buf, buffer, copied);
 
@@ -161,7 +161,7 @@ ssize_t mp2_write (struct file *filp, const char __user *buf, size_t count, loff
         char command = buffer[0];
         if(command == 'R'){
             sscanf(buffer + 3, "%u %lu %lu\n", &pid, &period, &process_time);
-            mp2_register(pid, period, process);
+            mp2_register(pid, period, process_time);
         } else if (command == 'Y') {
             sscanf(buffer + 3, "%u\n", &pid);
             mp2_yield(pid);
@@ -230,15 +230,12 @@ void __exit mp2_exit(void)
         kmem_cache_destroy(mp2_cache);
     }
 
-   // Wait for all the work finished
-    flush_workqueue(work_queue);
-    destroy_workqueue(work_queue);
-
     mutex_lock(&mutexLock);
     mp2_task_struct *pos, *next;
     // Free the linked list
-    list_for_each_entry_safe(pos, next, &my_head) {
-        destruct_node(pos);
+    list_for_each_entry_safe(pos, next, &my_head, task_node) {
+        list_del(&pos->task_node);
+        kfree(pos);
     }
 
 // Register init and exit funtions
