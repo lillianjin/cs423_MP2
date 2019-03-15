@@ -97,7 +97,7 @@ static void mp2_register(unsigned int pid, unsigned long period, unsigned long p
     mp2_task_struct *curr_task = (mp2_task_struct *) kmem_cache_alloc(mp2_cache, GFP_KERNEL);
     curr_task->task = find_task_by_pid(pid);
     curr_task->pid = pid;
-    curr_task->task_period = task_period;
+    curr_task->task_period = period;
     curr_task->task_state = SLEEPING;
     curr_task->process_time = process_time;
 
