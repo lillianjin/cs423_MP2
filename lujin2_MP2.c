@@ -121,10 +121,10 @@ static void mp2_deregister(unsigned int pid) {
     printk(KERN_ALERT "DEREGISTRATION MODULE LOADING\n");
     #endif
     mp2_task_struct *curr, *next;
-    mutex(&mutexLock);
+    mutex_lock(&mutexLock);
     list_for_each_entry_safe(curr, next, &my_head, task_node) {
         // remove the task and destroy all data structure
-        del_timer(&(curr->wakeup_timer))
+        del_timer(&(curr->wakeup_timer));
         list_del(&curr->task_node);
         kmem_cache_free(mp2_cache, curr);
         }
