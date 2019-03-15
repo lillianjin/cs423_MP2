@@ -33,7 +33,7 @@ Define a structure to represent Process Control Block
 typedef struct mp2_task_struct {
     struct task_struct *task;
     struct list_head task_node;
-    struct timer_list task_timer;
+    struct timer_list wakeup_timer;
 
     unsigned int pid;
     unsigned int task_period; // the priority in RMS
@@ -53,6 +53,38 @@ struct mutex mutexLock;
 static struct kmem_cache *mp2_cache;
 // Create a list head
 LIST_HEAD(my_head);
+// Define a spin lock
+static DEFINE_SPINLOCK(sp_lock);
+
+/*
+Find task struct by pid
+*/
+mp2_task_struct* find_mptask_by_pid(unsigned int nr)
+{
+    mp2_task_struct* task;
+    list_for_each_entry(task, &my_head, task_node) {
+        if(task->pid == pid){
+            return task;
+        }
+    }
+    return NULL;
+}
+
+/*
+Time handler function
+t: user defined data
+*/
+ void timer_function(unsigned int pid) {
+    unsigned long flags; 
+    printk(KERN_ALERT "TIMER RUNNING, pid is %u\n", pid);
+    spin_lock_irqsave(&sp_lock, flags)
+    mp2_task_struct *tsk = find_mptask_by_pid(pid);
+    if(tsk->task_state == SLEEPING){
+        tsk->task_state = READY;
+    }
+    spin_unlock_irqrestore(&sp_lock, flags);
+    wake_up_process(dispatch_thread);
+ }
 
 /*
 This function allows the application to notify to our kernel module its intent to use the RMS scheduler.
@@ -61,6 +93,23 @@ static void mp2_register(unsigned int pid, unsigned long period, unsigned long p
     #ifdef DEBUG
     printk(KERN_ALERT "REGISTRATION MODULE LOADING\n");
     #endif
+    // initiate and allocate, use slab allocator
+    mp2_task_struct *curr_task = (mp2_task_struct *) kmem_cache_alloc(mp2_cache, GFP_KERNEL);
+    curr_task->task = find_task_by_pid(pid);
+    curr_task->pid = pid;
+    curr_task->period = task_period;
+    curr_task->task_state = SLEEPING;
+    curr_task->process_time = process_time;
+
+    // Setup the wakeup timer function
+    setup_timer( &(curr_task->wakeup_timer), timer_function, res->pid );
+
+    // check for admission_control
+
+    // add the task to task list
+    mutex_lock(&mutexLock);
+    list_add(&(curr_task->task_node), &my_head);
+    mutex_unlock(&mutexLock);
 }
 
 
@@ -71,6 +120,7 @@ static void mp2_deregister(unsigned int pid) {
     #ifdef DEBUG
     printk(KERN_ALERT "DEREGISTRATION MODULE LOADING\n");
     #endif
+
 }
 
 
@@ -224,12 +274,12 @@ void __exit mp2_exit(void)
    printk(KERN_ALERT "MP2 MODULE UNLOADING\n");
    #endif
    // Insert your code here ...
+    mp2_task_struct *pos, *next;
 
     /*
     remove /proc/mp2/status and /proc/mp2 using remove_proc_entry(*name, *parent)
     Removes the entry name in the directory parent from the procfs
     */
-    mp2_task_struct *pos, *next;
 
     remove_proc_entry(FILENAME, proc_dir);
     remove_proc_entry(DIRECTORY, NULL);
