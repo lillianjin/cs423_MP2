@@ -59,7 +59,7 @@ static DEFINE_SPINLOCK(sp_lock);
 /*
 Find task struct by pid
 */
-mp2_task_struct* find_mptask_by_pid(unsigned int nr)
+mp2_task_struct* find_mptask_by_pid(unsigned int pid)
 {
     mp2_task_struct* task;
     list_for_each_entry(task, &my_head, task_node) {
@@ -77,7 +77,7 @@ t: user defined data
  void timer_function(unsigned int pid) {
     unsigned long flags; 
     printk(KERN_ALERT "TIMER RUNNING, pid is %u\n", pid);
-    spin_lock_irqsave(&sp_lock, flags)
+    spin_lock_irqsave(&sp_lock, flags);
     mp2_task_struct *tsk = find_mptask_by_pid(pid);
     if(tsk->task_state == SLEEPING){
         tsk->task_state = READY;
@@ -97,12 +97,12 @@ static void mp2_register(unsigned int pid, unsigned long period, unsigned long p
     mp2_task_struct *curr_task = (mp2_task_struct *) kmem_cache_alloc(mp2_cache, GFP_KERNEL);
     curr_task->task = find_task_by_pid(pid);
     curr_task->pid = pid;
-    curr_task->period = task_period;
+    curr_task->task_period = task_period;
     curr_task->task_state = SLEEPING;
     curr_task->process_time = process_time;
 
     // Setup the wakeup timer function
-    setup_timer( &(curr_task->wakeup_timer), timer_function, res->pid );
+    setup_timer( &(curr_task->wakeup_timer), timer_function, curr_task->pid );
 
     // check for admission_control
 
