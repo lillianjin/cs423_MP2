@@ -23,6 +23,9 @@ MODULE_DESCRIPTION("CS-423 MP2");
 #define READY 0
 #define SLEEPING 1
 #define RUNNING 2
+#define REGISTRATION 'R'
+#define YIELD 'Y'
+#define DEREGISTRATION 'D'
 
 /*
 Define a structure to represent Process Control Block
