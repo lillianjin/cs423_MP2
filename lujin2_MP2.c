@@ -107,7 +107,7 @@ ssize_t mp2_read (struct file *filp, char __user *buf, size_t count, loff_t *off
 
     // record the location of current node inside "copied" after each entry
     list_for_each_entry(curr, &my_head, task_node){
-        copied += sprintf(buffer + copied, "%u[%u]: %lu ms, %lu ms\n", curr->pid, curr->task_state, curr->task_period, curr->process_time);
+        copied += sprintf(buffer + copied, "%u[%u]: %u ms, %lu ms\n", curr->pid, curr->task_state, curr->task_period, curr->process_time);
         printk(KERN_ALERT "I AM READING %d: %s, %u, %u, %lu, %lu\n", copied, buffer, curr->pid, curr->task_state, curr-> task_period, curr->process_time);
     }
 
@@ -142,7 +142,7 @@ offp: a pointer to a “long offset type” object that indicates the file posit
 ssize_t mp2_write (struct file *filp, const char __user *buf, size_t count, loff_t *offp)
 {
     char *buffer = (char *)kmalloc(4096, GFP_KERNEL);
-    mp2_task_struct *new;
+    // mp2_task_struct *new;
     unsigned int pid;
     unsigned long period;
     unsigned long process_time;
@@ -222,6 +222,8 @@ void __exit mp2_exit(void)
     remove /proc/mp2/status and /proc/mp2 using remove_proc_entry(*name, *parent)
     Removes the entry name in the directory parent from the procfs
     */
+    mp2_task_struct *pos, *next;
+
     remove_proc_entry(FILENAME, proc_dir);
     remove_proc_entry(DIRECTORY, NULL);
 
@@ -231,7 +233,6 @@ void __exit mp2_exit(void)
     }
 
     mutex_lock(&mutexLock);
-    mp2_task_struct *pos, *next;
     // Free the linked list
     list_for_each_entry_safe(pos, next, &my_head, task_node) {
         list_del(&pos->task_node);
