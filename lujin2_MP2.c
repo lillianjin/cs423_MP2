@@ -158,19 +158,23 @@ ssize_t mp2_write (struct file *filp, const char __user *buf, size_t count, loff
     buffer[count] = '\0';
 
     if(count > 0){
-        char command = buffer[0];
-        if(command == 'R'){
-            sscanf(buffer + 3, "%u %lu %lu\n", &pid, &period, &process_time);
+        switch (buffer[0])
+        {
+            case REGISTRATION:
+                sscanf(buffer + 3, "%u %lu %lu\n", &pid, &period, &process_time);
             mp2_register(pid, period, process_time);
-        } else if (command == 'Y') {
-            sscanf(buffer + 3, "%u\n", &pid);
+                break;
+            case YIELD:
+                sscanf(buffer + 3, "%u\n", &pid);
+                break;
             mp2_yield(pid);
-        } else if (command == 'D') {
-            sscanf(buffer + 3, "%u\n", &pid);
-            mp2_deregister(pid);
-        } else {
-            kfree(buffer);
-            return 0;
+            case DEREGISTRATION:
+                sscanf(buffer + 3, "%u\n", &pid);
+                mp2_deregister(pid);
+                break;
+            default:
+                kfree(buffer);
+                return 0;
         }
     }
 
