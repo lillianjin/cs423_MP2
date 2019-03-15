@@ -128,7 +128,6 @@ static void mp2_deregister(unsigned int pid) {
         list_del(&curr->task_node);
         kmem_cache_free(mp2_cache, curr);
         }
-    }
     mutex_unlock(&mutexLock);
 }
 
