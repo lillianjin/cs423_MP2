@@ -289,13 +289,6 @@ void __exit mp2_exit(void)
    // Insert your code here ...
     mp2_task_struct *pos, *next;
 
-    /*
-    remove /proc/mp2/status and /proc/mp2 using remove_proc_entry(*name, *parent)
-    Removes the entry name in the directory parent from the procfs
-    */
-
-    remove_proc_entry(FILENAME, proc_dir);
-    remove_proc_entry(DIRECTORY, NULL);
 
     mutex_lock(&mutexLock);
     // Free the linked list
@@ -308,8 +301,14 @@ void __exit mp2_exit(void)
     mutex_unlock(&mutexLock);
 
     // destroy slab cache
-    // mutex_destroy(&mutexLock);
+    mutex_destroy(&mutexLock);
 
+    /*
+    remove /proc/mp2/status and /proc/mp2 using remove_proc_entry(*name, *parent)
+    Removes the entry name in the directory parent from the procfs
+    */
+    remove_proc_entry(FILENAME, proc_dir);
+    remove_proc_entry(DIRECTORY, NULL);
 }
 
 // Register init and exit funtions
