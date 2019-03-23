@@ -55,7 +55,7 @@ static struct kmem_cache *mp2_cache;
 LIST_HEAD(my_head);
 // Define a spin lock
 static DEFINE_SPINLOCK(sp_lock);
-void timer_function(unsigned long);
+void timer_function(unsigned int);
 
 /*
 Find task struct by pid
