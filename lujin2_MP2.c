@@ -202,7 +202,7 @@ offp: a pointer to a “long offset type” object that indicates the file posit
 */
 ssize_t mp2_write (struct file *filp, const char __user *buf, size_t count, loff_t *offp)
 {
-    char *buffer = (char *)kmalloc(4096, GFP_KERNEL);
+    char *buffer = (char *)kmalloc(count+1, GFP_KERNEL);
     // mp2_task_struct *new;
     unsigned int pid;
     unsigned long period;
@@ -216,6 +216,7 @@ ssize_t mp2_write (struct file *filp, const char __user *buf, size_t count, loff
     // }
 
     copy_from_user(buffer, buf, count);
+    buffer[count] = '\0';
     printk(KERN_ALERT "buffer[0] is: %s", buffer[0]);
 
     if(count > 0){
