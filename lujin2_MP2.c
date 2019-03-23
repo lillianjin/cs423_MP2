@@ -168,8 +168,8 @@ ssize_t mp2_read (struct file *filp, char __user *buf, size_t count, loff_t *off
 
     // record the location of current node inside "copied" after each entry
     list_for_each_entry(curr, &my_head, task_node){
-        copied += sprintf(buffer + copied, "%u[%u]: %u ms, %lu ms\n", curr->pid, curr->task_state, curr->task_period, curr->process_time);
-        printk(KERN_ALERT "I AM READING %d: %s, %u, %u, %lu, %lu\n", copied, buffer, curr->pid, curr->task_state, curr-> task_period, curr->process_time);
+        copied += sprintf(buffer + copied, "%u, %u, %u, %lu\n", curr->pid, curr->task_state, curr->task_period, curr->process_time);
+        printk(KERN_ALERT "I AM READING: %s, %u, %u, %u, %lu\n", buffer, curr->pid, curr->task_state, curr-> task_period, curr->process_time);
     }
 
     // if the message length is larger than buffer size
