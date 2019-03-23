@@ -310,6 +310,7 @@ void __exit mp2_exit(void)
     }
     kmem_cache_destroy(mp2_cache);
     mutex_unlock(&mutexLock);
+    mutex_destroy(&mutexLock);
 
 }
 
