@@ -272,7 +272,7 @@ int __init mp2_init(void)
    proc_entry = proc_create(FILENAME, 0666, proc_dir, &file_fops);
 
    // init a new cache of size sizeof(mp2_task_struct)
-    mp2_cache = kmem_cache_create("mp2_cache", sizeof(mp2_task_struct), 0, SLAB_HWCACHE_ALIGN, NULL);
+   mp2_cache = kmem_cache_create("mp2_cache", sizeof(mp2_task_struct), 0, SLAB_HWCACHE_ALIGN, NULL);
 
    printk(KERN_ALERT "MP2 MODULE LOADED\n");
    return 0;
@@ -305,8 +305,12 @@ void __exit mp2_exit(void)
     // Free the linked list
     list_for_each_entry_safe(pos, next, &my_head, task_node) {
         list_del(&pos->task_node);
+        del_timer(&pos->wakeup_timer);
         kfree(pos);
     }
+    kmem_cache_destroy(mp2_cache);
+    mutex_unlock(&mutexLock);
+
 }
 
 // Register init and exit funtions
