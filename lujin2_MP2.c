@@ -105,7 +105,7 @@ static void mp2_register(unsigned int pid, unsigned int period, unsigned long pr
     curr_task->process_time = process_time;
 
     // Setup the wakeup timer function
-    setup_timer(&curr_task->wakeup_timer, my_timer_function, (unsigned long)curr_task->pid);
+    // setup_timer(&curr_task->wakeup_timer, my_timer_function, (unsigned long)curr_task->pid);
 
     // check for admission_control
 
