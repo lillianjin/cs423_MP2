@@ -59,7 +59,7 @@ static DEFINE_SPINLOCK(sp_lock);
 /*
 Find task struct by pid
 */
-mp2_task_struct* find_mptask_by_pid(unsigned int pid)
+mp2_task_struct* find_mptask_by_pid(unsigned long pid)
 {
     mp2_task_struct* task;
     list_for_each_entry(task, &my_head, task_node) {
@@ -79,6 +79,9 @@ t: user defined data
     printk(KERN_ALERT "TIMER RUNNING, pid is %u\n", pid);
     spin_lock_irqsave(&sp_lock, flags);
     mp2_task_struct *tsk = find_mptask_by_pid(pid);
+    if(tsk == NULL){
+        printk(KERN_ALERT "TASK IS NULL\n");
+    }
     if(tsk->task_state == SLEEPING){
         tsk->task_state = READY;
     }
