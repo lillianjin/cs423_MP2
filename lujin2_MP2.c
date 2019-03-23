@@ -297,11 +297,6 @@ void __exit mp2_exit(void)
     remove_proc_entry(FILENAME, proc_dir);
     remove_proc_entry(DIRECTORY, NULL);
 
-    //Destory slab cache
-    if(mp2_cache != NULL){
-        kmem_cache_destroy(mp2_cache);
-    }
-
     mutex_lock(&mutexLock);
     // Free the linked list
     list_for_each_entry_safe(pos, next, &my_head, task_node) {
@@ -312,6 +307,7 @@ void __exit mp2_exit(void)
     kmem_cache_destroy(mp2_cache);
     mutex_unlock(&mutexLock);
 
+    // destroy slab cache
     mutex_destroy(&mutexLock);
 
 }
