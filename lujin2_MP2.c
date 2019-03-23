@@ -74,7 +74,7 @@ mp2_task_struct* find_mptask_by_pid(unsigned int pid)
 Time handler function
 t: user defined data
 */
- static void my_timer_function(unsigned long pid) {
+ static void my_timer_function(unsigned int pid) {
     unsigned long flags; 
     printk(KERN_ALERT "TIMER RUNNING, pid is %u\n", pid);
     spin_lock_irqsave(&sp_lock, flags);
@@ -89,7 +89,7 @@ t: user defined data
 /*
 This function allows the application to notify to our kernel module its intent to use the RMS scheduler.
 */
-static void mp2_register(unsigned int pid, unsigned long period, unsigned long process_time) {
+static void mp2_register(unsigned int pid, unsigned int period, unsigned long process_time) {
     #ifdef DEBUG
     printk(KERN_ALERT "REGISTRATION MODULE LOADING\n");
     #endif
@@ -102,7 +102,7 @@ static void mp2_register(unsigned int pid, unsigned long period, unsigned long p
     curr_task->process_time = process_time;
 
     // Setup the wakeup timer function
-    // setup_timer(&curr_task->wakeup_timer, my_timer_function, curr_task->pid);
+    setup_timer(&curr_task->wakeup_timer, my_timer_function, curr_task->pid);
 
     // check for admission_control
 
