@@ -308,7 +308,7 @@ void __exit mp2_exit(void)
     mutex_unlock(&mutexLock);
 
     // destroy slab cache
-    mutex_destroy(&mutexLock);
+    // mutex_destroy(&mutexLock);
 
 }
 
