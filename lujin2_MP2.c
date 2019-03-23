@@ -223,15 +223,15 @@ ssize_t mp2_write (struct file *filp, const char __user *buf, size_t count, loff
         switch (buffer[0])
         {
             case REGISTRATION:
-                sscanf(buffer + 3, "%u %lu %lu\n", &pid, &period, &process_time);
-            mp2_register(pid, period, process_time);
+                sscanf(buffer + 2, "%u,%lu,%lu\n", &pid, &period, &process_time);
+                mp2_register(pid, period, process_time);
                 break;
             case YIELD:
-                sscanf(buffer + 3, "%u\n", &pid);
+                sscanf(buffer + 2, "%u\n", &pid);
                 break;
             mp2_yield(pid);
             case DEREGISTRATION:
-                sscanf(buffer + 3, "%u\n", &pid);
+                sscanf(buffer + 2, "%u\n", &pid);
                 mp2_deregister(pid);
                 break;
             default:
@@ -240,7 +240,7 @@ ssize_t mp2_write (struct file *filp, const char __user *buf, size_t count, loff
         }
     }
 
-    printk(KERN_ALERT "I AM WRITING: %s, %d, %d, %lu\n", buffer, pid, period, process_time);
+    printk(KERN_ALERT "I AM WRITING: %s, %u, %u, %lu\n", buffer, pid, period, process_time);
 
     kfree(buffer);
     return count;
