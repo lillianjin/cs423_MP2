@@ -217,6 +217,7 @@ ssize_t mp2_write (struct file *filp, const char __user *buf, size_t count, loff
 
     copy_from_user(buffer, buf, count);
     buffer[count] = '\0';
+    printk(KERN_ALERT "buffer[0] is: %s", buffer[0]);
 
     if(count > 0){
         switch (buffer[0])
