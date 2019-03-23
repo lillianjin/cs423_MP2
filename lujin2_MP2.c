@@ -239,7 +239,7 @@ ssize_t mp2_write (struct file *filp, const char __user *buf, size_t count, loff
         }
     }
 
-    // printk(KERN_ALERT "I AM WRITING%s, %d, %lu\n", buffer, new->pid, new->cpu_time);
+    printk(KERN_ALERT "I AM WRITING: %s, %d, %lu\n", buffer, new->pid, new->cpu_time);
 
     kfree(buffer);
     return count;
