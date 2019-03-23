@@ -273,7 +273,8 @@ int __init mp2_init(void)
 
    // init a new cache of size sizeof(mp2_task_struct)
    mp2_cache = kmem_cache_create("mp2_cache", sizeof(mp2_task_struct), 0, SLAB_HWCACHE_ALIGN, NULL);
-
+   
+   spin_lock_init(&sp_lock);
    printk(KERN_ALERT "MP2 MODULE LOADED\n");
    return 0;
 }
@@ -306,10 +307,11 @@ void __exit mp2_exit(void)
     list_for_each_entry_safe(pos, next, &my_head, task_node) {
         list_del(&pos->task_node);
         del_timer(&pos->wakeup_timer);
-        kfree(pos);
+        kmem_cache_free(mp2_cache, pos);
     }
     kmem_cache_destroy(mp2_cache);
     mutex_unlock(&mutexLock);
+
     mutex_destroy(&mutexLock);
 
 }
