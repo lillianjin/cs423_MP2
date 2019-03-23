@@ -96,13 +96,13 @@ static void mp2_register(unsigned int pid, unsigned int period, unsigned long pr
     // initiate and allocate, use slab allocator
     mp2_task_struct *curr_task = (mp2_task_struct *) kmem_cache_alloc(mp2_cache, GFP_KERNEL);
     curr_task->task = find_task_by_pid(pid);
-    curr_task->pid = pid;
+    curr_task->pid = (unsigned long)pid;
     curr_task->task_period = period;
     curr_task->task_state = SLEEPING;
     curr_task->process_time = process_time;
 
     // Setup the wakeup timer function
-    setup_timer(&curr_task->wakeup_timer, my_timer_function, (unsigned long)curr_task->pid);
+    setup_timer(&curr_task->wakeup_timer, my_timer_function, curr_task->pid);
 
     // check for admission_control
 
