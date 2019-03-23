@@ -130,7 +130,7 @@ static void mp2_deregister(unsigned int pid) {
         }
     mutex_unlock(&mutexLock);
 }
-
+ 
 
 /*
 This function notifies the RMS scheduler that the application has finished its period.
