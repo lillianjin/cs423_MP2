@@ -74,7 +74,7 @@ mp2_task_struct* find_mptask_by_pid(unsigned int pid)
 Time handler function
 t: user defined data
 */
- void timer_function(unsigned int pid) {
+ void timer_function(unsigned long pid) {
     unsigned long flags; 
     printk(KERN_ALERT "TIMER RUNNING, pid is %u\n", pid);
     spin_lock_irqsave(&sp_lock, flags);
