@@ -274,6 +274,7 @@ int __init mp2_init(void)
    // init a new cache of size sizeof(mp2_task_struct)
    mp2_cache = kmem_cache_create("mp2_cache", sizeof(mp2_task_struct), 0, SLAB_HWCACHE_ALIGN, NULL);
    
+   mutex_init(&mutexLock);
    spin_lock_init(&sp_lock);
    printk(KERN_ALERT "MP2 MODULE LOADED\n");
    return 0;
