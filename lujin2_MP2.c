@@ -55,7 +55,7 @@ static struct kmem_cache *mp2_cache;
 LIST_HEAD(my_head);
 // Define a spin lock
 static DEFINE_SPINLOCK(sp_lock);
-void timer_function(unsigned int);
+void timer_function(unsigned long);
 
 /*
 Find task struct by pid
@@ -103,7 +103,7 @@ static void mp2_register(unsigned int pid, unsigned long period, unsigned long p
     curr_task->process_time = process_time;
 
     // Setup the wakeup timer function
-    setup_timer( &curr_task->wakeup_timer, timer_function, curr_task->pid );
+    setup_timer(&curr_task->wakeup_timer, timer_function, curr_task->pid);
 
     // check for admission_control
 
