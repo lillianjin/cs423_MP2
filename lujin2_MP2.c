@@ -208,15 +208,14 @@ ssize_t mp2_write (struct file *filp, const char __user *buf, size_t count, loff
     unsigned long period;
     unsigned long process_time;
 
-    memset(buffer, 0, 4096);
-    // if the lengh of message is larger than buffer size or the file is already written, return
-    if (count > 4096 || *offp>0) {
-        kfree(buffer);
-        return -EFAULT;
-    }
+    // memset(buffer, 0, 4096);
+    // // if the lengh of message is larger than buffer size or the file is already written, return
+    // if (count > 4096 || *offp>0) {
+    //     kfree(buffer);
+    //     return -EFAULT;
+    // }
 
     copy_from_user(buffer, buf, count);
-    buffer[count] = '\0';
     printk(KERN_ALERT "buffer[0] is: %s", buffer[0]);
 
     if(count > 0){
