@@ -53,7 +53,7 @@ int my_read_status(unsigned int pid){
             tmp = strtok(line, ":");
             printf("this line is %s\n", tmp);
             cur_pid = strtok(tmp, ",");
-            printf("the pid in line is %s\n", cur_pid);
+            // printf("the pid in line is %s\n", cur_pid);
             if(strtoul(cur_pid, NULL, 10) == pid){
                 return 1;
             }
@@ -74,6 +74,7 @@ int main(int argc, char* argv[]){
     int num;
     unsigned int pid, period;
     unsigned long process_time;
+    struct timeval t0, start, end;
 
     if(argc != 4){
         perror("Please input the command again in the format of './userapp period process_time(in ms) num_of_jobs'" );
@@ -100,6 +101,15 @@ int main(int argc, char* argv[]){
     }
     printf("Registration succeeded.\n");
 
+    // DEREGISTERATION
+    UNREGISTER(pid);
+    if(my_read_status(pid)==1){
+        printf("Unregistration failed.\n");
+        return 0;
+    }
+    printf("Unregistration succeeded.\n");
+
+    // gettimeofday()
 
 
 }
