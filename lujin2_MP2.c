@@ -37,6 +37,7 @@ typedef struct mp2_task_struct {
 
     unsigned int pid;
     unsigned int task_period; // the priority in RMS
+    unsigned int next_period; 
     unsigned int task_state;
     unsigned long process_time;
 } mp2_task_struct;
@@ -144,12 +145,97 @@ static void mp2_deregister(unsigned int pid) {
  
 
 /*
+This function is used to find the highest priority task
+*/
+static mp2_task_struct* find_highest_prioty_tsk(){
+    unsigned long flags; 
+    mp2_task_struct *curr, *highest;
+    unsigned_long min_period = INT_MAX;
+    spin_lock_irqsave(&sp_lock, flags);
+    list_for_each_entry(curr, &my_head, task_node) {
+        if(highest == NULL || curr->task_period < min_period){
+            highest = curr;
+            min_period = curr->task_period;
+        }
+    }
+    spin_unlock_irqrestore(&sp_lock, flags);
+    return highest;
+}
+
+/*
+This function dispatches thread to switch next highest priority ready task
+*/
+static int dispatch_thread_function(){
+    mp2_task_struct *tsk;
+    unsigned long flags; 
+    sturct sched_param sparam;
+
+    while(1){
+        // put dispatching thread to sleep
+        set_current_state(TASK_INTERRUPTIBLE);
+        schedule();
+        // check if the kthread can return
+        if(kthread_should_stop()){
+            printk(KERN_ALERT "DISPATCHING THREAD FINISHED WORKING");
+            return 0;
+        }
+        spin_lock_irqsave(&sp_lock, flags);
+        printk(KERN_ALERT "DISPATCHING THREAD STARTS WORKING");
+        tsk = find_highest_prioty_tsk(cur_task);
+        // current task has higher pirority/ lower period
+        if(tsk != NULL){
+            if(cur_task != NULL && cur_task->task_period > tsk->task_period){
+                cur_task->task_state = READY;
+                sparam.sched_priority = 0;
+                sched_setscheduler(tsk->task, SCHED_NORMAL, 0);
+                // let the higher piority task to run
+                tsk->task_state = RUNNING;
+                wake_up_process(tsk->task);
+                sched_setscheduler(tsk->task, SCHED_FIFO, 99);
+                cur_task = tsk;
+            }
+        }else{
+            //if no task is ready
+            if(cur_task != NULL){
+                sparam.sched_priority = 0;
+                sched_setscheduler(tsk->task, SCHED_NORMAL, 0);
+            }
+        }
+        spin_unlock_irqrestore(&sp_lock, flags);
+    }
+    return 0;
+}
+
+
+/*
 This function notifies the RMS scheduler that the application has finished its period.
 */
 static void mp2_yield(unsigned int pid) {
     #ifdef DEBUG
     printk(KERN_ALERT "YIELD MODULE LOADING\n");
     #endif
+    mp_task_struct *tsk = find_mptask_by_pid(pid);
+    unsigned long flags; 
+    spin_lock_irqsave(&sp_lock, flags);
+    if(tsk != NULL && tsk->task != NULL){
+        // if first time yield
+        if(tsk->next_period==0){
+            tsk->next_period += jiffies + msecs_to_jiffies(tsk->task_period);
+        }else{
+            tsk->next_period += msecs_to_jiffies(tsk->task_period);
+        }
+        // next period has not start
+        if(tsk->next_period >= jiffies){
+            tsk->task_state = SLEEPING;
+            mod_timer(&tsk->task_timer, tsk->next_period);
+            set_task_state(tsk->task, TASK_UNINTERRUPTIBLE);
+            cur_task = NULL;
+            wake_up_process(dispatch_thread);
+            schedule();
+        }
+    }
+    spin_unlock_irqrestore(&sp_lock, flags);
+    printk(KERN_ALERT "YIELD MODULE LOADED\n");
 }
 
 /*
