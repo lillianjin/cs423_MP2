@@ -102,12 +102,12 @@ static bool my_admission_control(mp2_task_struct *new){
     // compute the existing ratio sum
     spin_lock_irqsave(&sp_lock, flags);
     list_for_each_entry(temp, &my_head, task_node){
-        tot_ratio += 1000 * temp->process_time / temp->task_period;
+        tot_ratio += 1000000 * temp->process_time / temp->task_period;
     }
     spin_unlock_irqrestore(&sp_lock, flags);
     // add new ratio
-    tot_ratio += 1000 * new->process_time / new->task_period;
-    if(tot_ratio <= 693){
+    tot_ratio += 1000000 * new->process_time / new->task_period;
+    if(tot_ratio <= 693000){
         printk(KERN_ALERT "MODULE %u PASSES ADMISSION CONTROL\n", temp->pid);
         return true;
     }else{
@@ -353,7 +353,7 @@ ssize_t mp2_write (struct file *filp, const char __user *buf, size_t count, loff
 
     copy_from_user(buffer, buf, count);
     buffer[count] = '\0';
-    printk(KERN_ALERT "buffer[0] is: %c", buffer[0]);
+    // printk(KERN_ALERT "buffer[0] is: %c", buffer[0]);
 
     if(count > 0){
         switch (buffer[0])
