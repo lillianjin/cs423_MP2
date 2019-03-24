@@ -127,8 +127,8 @@ static void mp2_deregister(unsigned int pid) {
     mp2_task_struct *curr, *next;
     unsigned long flags; 
     spin_lock_irqsave(&sp_lock, flags);
-    
-    mp2_task_struct *curr = find_mptask_by_pid(pid);
+
+    curr = find_mptask_by_pid(pid);
     curr->task_state = SLEEPING;
     del_timer(&(curr->wakeup_timer));
     list_del(&curr->task_node);
