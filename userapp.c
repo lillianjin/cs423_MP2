@@ -84,10 +84,10 @@ int main(int argc, char* argv[]){
 
     printf("pid is %u, period is %u, process_time is %lu, number of jobs is %d\n", pid, period, process_time, num);
 
-    if(process_time > period){
-        perror("Period must be larger than process time");
-        return 0;
-    }
+    // if(process_time > period){
+    //     perror("Period must be larger than process time");
+    //     return 0;
+    // }
 
     // REGISTERATION
     // REGISTER(pid, period, process_time);
