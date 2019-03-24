@@ -45,8 +45,8 @@ int my_read_status(unsigned int pid){
         return 1;
     }
     while(1){
-        curr = getline(&line, &n, f);
-        printf("curr is %z\n", curr);
+        curr = (int)getline(&line, &n, f);
+        printf("curr is %d\n", curr);
         if(curr == -1){
             break;
         }else{
