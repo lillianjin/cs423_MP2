@@ -91,7 +91,7 @@ int main(int argc, char* argv[]){
 
     // REGISTERATION
     REGISTER(pid, period, process_time);
-    if(read_status(pid)){
+    if(read_status(pid)==0){
         printf("Registration failed.\n");
         return 0;
     }
