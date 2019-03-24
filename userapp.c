@@ -18,8 +18,27 @@ void YIELD(unsigned int pid){
     fclose(f);
 }
 
+/*
+    argc: should be 3 
+    argv[0]: ./userapp
+    argv[1]: period
+    argv[2]: process_time (in milliseconds)
+*/
 int main(int argc, char* argv[]){
-    unsigned int pid = gitpid();
-    
+    unsigned int pid, period;
+    unsigned long process_time;
+
+    if(argc != 3){
+        perror("Please input the command again in the format of './userapp period process_time(in ms)'" );
+        return 1;
+    }
+
+    pid = gitpid();
+    period = strtoul(argv[1], NULL, 10);
+    process_time = strtoul(argv[2], NULL, 10);
+
+    printf("pid is %u, period is %u, process_time is %lu\n", pid, period, process_time);
+
+
 }
 
