@@ -46,7 +46,7 @@ int my_read_status(unsigned int pid){
     }
     while(1){
         curr = getline(&line, &n, f);
-        printf("curr is %ld\n", curr);
+        // printf("curr is %ld\n", curr);
         if(curr == 1){
             break;
         }else{
@@ -63,6 +63,13 @@ int my_read_status(unsigned int pid){
     return 0;
 }
 
+void do_job(){
+    long long res;
+    for(int i=0; i<100000; i++){
+		res += i;
+	}
+}
+
 /*
     argc: should be 4 
     argv[0]: ./userapp
@@ -74,7 +81,8 @@ int main(int argc, char* argv[]){
     int num;
     unsigned int pid, period;
     unsigned long process_time;
-    struct timeval t0, start, end;
+    struct timeval start, end;
+    int t;
 
     if(argc != 4){
         perror("Please input the command again in the format of './userapp period process_time(in ms) num_of_jobs'" );
@@ -101,6 +109,24 @@ int main(int argc, char* argv[]){
     }
     printf("Registration succeeded.\n");
 
+    // YIELD
+    // gettimeofday(&init, NULL);
+    printf("Yield begins.\n");
+    YIELD(pid);
+    printf("Yield 1 succeeded.\n");
+    t = 0;
+    while(t < num){
+        gettimeofday(&start, NULL);
+        printf("pid: %u, start time:\t%d ms\n", pid, (int)(start.tv_sec * 1000));
+        do_job();
+        gettimeofday(&end, NULL);
+        printf("pid: %u, end time:\t%d ms\n", pid, (int)(end.tv_sec * 1000));
+        YIELD(pid);
+        t++;
+    }
+    printf("Yield succeeded.\n");
+
+    
     // DEREGISTERATION
     DEREGISTER(pid);
     if(my_read_status(pid)==1){
@@ -109,8 +135,6 @@ int main(int argc, char* argv[]){
     }
     printf("Unregistration succeeded.\n");
 
-    // gettimeofday()
 
 
 }
-
