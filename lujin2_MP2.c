@@ -1,5 +1,5 @@
 #define LINUX
-
+#include <linux/kthread.h>
 #include <linux/module.h>
 #include <linux/kernel.h>
 #include <linux/list.h>
@@ -147,10 +147,10 @@ static void mp2_deregister(unsigned int pid) {
 /*
 This function is used to find the highest priority task
 */
-static mp2_task_struct* find_highest_prioty_tsk(){
+static mp2_task_struct* find_highest_prioty_tsk(void){
     unsigned long flags; 
     mp2_task_struct *curr, *highest;
-    unsigned_long min_period = INT_MAX;
+    unsigned long min_period = INT_MAX;
     spin_lock_irqsave(&sp_lock, flags);
     list_for_each_entry(curr, &my_head, task_node) {
         if(highest == NULL || curr->task_period < min_period){
@@ -165,10 +165,10 @@ static mp2_task_struct* find_highest_prioty_tsk(){
 /*
 This function dispatches thread to switch next highest priority ready task
 */
-static int dispatch_thread_function(){
+static int dispatch_thread_function(void){
     mp2_task_struct *tsk;
     unsigned long flags; 
-    sturct sched_param sparam;
+    struct sched_param sparam;
 
     while(1){
         // put dispatching thread to sleep
@@ -214,7 +214,7 @@ static void mp2_yield(unsigned int pid) {
     #ifdef DEBUG
     printk(KERN_ALERT "YIELD MODULE LOADING\n");
     #endif
-    mp_task_struct *tsk = find_mptask_by_pid(pid);
+    mp2_task_struct *tsk = find_mptask_by_pid(pid);
     unsigned long flags; 
     spin_lock_irqsave(&sp_lock, flags);
     if(tsk != NULL && tsk->task != NULL){
