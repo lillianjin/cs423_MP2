@@ -4,18 +4,30 @@
 
 void REGISTER(unsigned int pid, unsigned int period, unsigned long process_time){
     FILE *f = fopen("/proc/mp2/status", "w");
+    if(!f){
+        perror("Proc file not exists!");
+        return 1;
+    }
     fprintf(f, "R, %u, %u. %lu", pid, period, process_time);
     fclose(f);
 }
 
 void DEREGISTER(unsigned int pid){
     FILE *f = fopen("/proc/mp2/status", "w");
+    if(!f){
+        perror("Proc file not exists!");
+        return 1;
+    }
     fprintf(f, "D, %u", pid);
     fclose(f);
 }
 
 void YIELD(unsigned int pid){
     FILE *f = fopen("/proc/mp2/status", "w");
+    if(!f){
+        perror("Proc file not exists!");
+        return 1;
+    }
     fprintf(f, "Y, %u", pid);
     fclose(f);
 }
@@ -34,7 +46,7 @@ int main(int argc, char* argv[]){
 
     if(argc != 4){
         perror("Please input the command again in the format of './userapp period process_time(in ms) num_of_jobs'" );
-        return 0;
+        return 1;
     }
 
     pid = getpid();
@@ -46,9 +58,12 @@ int main(int argc, char* argv[]){
 
     if(process_time > period){
         perror("Period must be larger than process time");
-        return 0;
+        return 1;
     }
 
+    // REGISTERATION
+    REGISTER(pid, period, process_time);
+    printf("Registration succeeded.\n");
 
 
 
