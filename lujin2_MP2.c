@@ -252,13 +252,11 @@ static int admission_control(mp2_task_struct *new){
     // compute the existing ratio sum
     spin_lock_irqsave(&sp_lock, flags);
     list_for_each_entry(temp, &my_haed, task_node){
-        tot_ratio += (1000 * temp->process_time) / temp->task_period;
+        tot_ratio += 1000 * temp->process_time / temp->task_period;
     }
     spin_lock_irqsave(&sp_lock, flags);
     // add new ratio
-    ci = new->process_time;
-    pi = new->task_period;
-    tot_ratio += 1000 * ci / pi;
+    tot_ratio += 1000 * new->process_time / new->task_period;
     return (tot_ratio <= 693);
 }
 
