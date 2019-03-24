@@ -6,7 +6,7 @@ void REGISTER(unsigned int pid, unsigned int period, unsigned long process_time)
     FILE *f = fopen("/proc/mp2/status", "w");
     if(!f){
         perror("Proc file not exists!");
-        return 1;
+        return;
     }
     fprintf(f, "R, %u, %u. %lu", pid, period, process_time);
     fclose(f);
@@ -16,7 +16,7 @@ void DEREGISTER(unsigned int pid){
     FILE *f = fopen("/proc/mp2/status", "w");
     if(!f){
         perror("Proc file not exists!");
-        return 1;
+        return;
     }
     fprintf(f, "D, %u", pid);
     fclose(f);
@@ -26,7 +26,7 @@ void YIELD(unsigned int pid){
     FILE *f = fopen("/proc/mp2/status", "w");
     if(!f){
         perror("Proc file not exists!");
-        return 1;
+        return;
     }
     fprintf(f, "Y, %u", pid);
     fclose(f);
