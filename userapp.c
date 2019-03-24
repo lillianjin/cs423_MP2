@@ -34,7 +34,7 @@ void YIELD(unsigned int pid){
 }
 
 // check if the task is successfully registered in proc system
-int read_status(unsigned int pid){
+int my_read_status(unsigned int pid){
     // FILE *f = fopen("/proc/mp2/status", "r+");
     // ssize_t curr;
     // char *line, *tmp;
@@ -91,7 +91,7 @@ int main(int argc, char* argv[]){
 
     // REGISTERATION
     REGISTER(pid, period, process_time);
-    if(read_status(pid)==0){
+    if(my_read_status(pid)==0){
         printf("Registration failed.\n");
         return 0;
     }
