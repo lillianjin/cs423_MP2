@@ -1,4 +1,5 @@
 #include <stdlib.h>
+#include <<stdio.h>>
 
 void REGISTER(unsigned int pid, unsigned int period, unsigned long process_time){
     FILE *f = fopen("/proc/mp2/status", "w");
