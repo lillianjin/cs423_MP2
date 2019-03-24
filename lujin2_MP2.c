@@ -244,14 +244,14 @@ static void mp2_yield(unsigned int pid) {
 /*
 This function is used to check the scheduling accuracy whenever a new task comes in.
 */
-static int admission_control(mp2_task_struct *new){
+static bool admission_control(mp2_task_struct *new){
     unsigned int tot_ratio = 0;
     mp2_task_struct *temp;
     unsigned long flags; 
 
     // compute the existing ratio sum
     spin_lock_irqsave(&sp_lock, flags);
-    list_for_each_entry(temp, &my_haed, task_node){
+    list_for_each_entry(temp, &my_head, task_node){
         tot_ratio += 1000 * temp->process_time / temp->task_period;
     }
     spin_lock_irqsave(&sp_lock, flags);
