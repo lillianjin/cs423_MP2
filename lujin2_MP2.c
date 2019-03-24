@@ -134,9 +134,11 @@ static void mp2_register(unsigned int pid, unsigned int period, unsigned long pr
     // Setup the wakeup timer function
     setup_timer(&curr_task->wakeup_timer, my_timer_function, (unsigned long)curr_task->pid);
     printk(KERN_ALERT "REGISTRATION TIMER LOADED\n");
-
+    
     // check for admission_control
     if(!my_admission_control(curr_task)){
+        printk(KERN_ALERT "ADMISSION RETURN\n");
+        kmem_cache_free(mp2_cache, curr_task);
         return;
     }
 
