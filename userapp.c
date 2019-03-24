@@ -50,9 +50,9 @@ int my_read_status(unsigned int pid){
             break;
         }else{
             tmp = strtok(line, ":");
-            printf("this line is %s", tmp);
+            printf("this line is %s\n", tmp);
             cur_pid = strtok(tmp, ",");
-            printf("the pid in line is %s", cur_pid);
+            printf("the pid in line is %s\n", cur_pid);
             if(strtoul(cur_pid, NULL, 10) == pid){
                 return 0;
             }
