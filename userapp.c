@@ -32,6 +32,31 @@ void YIELD(unsigned int pid){
     fclose(f);
 }
 
+// check if the task is successfully registered in proc system
+int read_status(unsigned long pid){
+    FILE *f = fopen("/proc/mp2/status", "r+");
+    ssize_t offset;
+    char *line;
+    size_t n;
+    if(!f){
+        perror("Proc file not exists!");
+        return 1;
+    }
+    while(1){
+        offset = getline(&line, &n, f);
+        if(offset == -1){
+            return 1;
+        }else{
+            pid_line = strtok(line, ",");
+            printf("pid in line is %u", pid_line);
+            if(atoi(pid_line) == pid){
+                return 0;
+            }
+        }
+    }
+    return 1;
+}
+
 /*
     argc: should be 4 
     argv[0]: ./userapp
@@ -63,6 +88,10 @@ int main(int argc, char* argv[]){
 
     // REGISTERATION
     REGISTER(pid, period, process_time);
+    if(!read_status(pid)){
+        printf("Registration failed.\n");
+        return 1;
+    }
     printf("Registration succeeded.\n");
 
 
