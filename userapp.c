@@ -37,7 +37,8 @@ void YIELD(unsigned int pid){
 int my_read_status(unsigned int pid){
     FILE *f = fopen("/proc/mp2/status", "r+");
     ssize_t curr;
-    char *line, *tmp;
+    char *tmp;
+    char line[100];
     size_t n;
     if(!f){
         perror("Proc file not exists!");
@@ -55,7 +56,7 @@ int my_read_status(unsigned int pid){
             }
         }
     }
-    // fclose(f);
+    fclose(f);
     return 0;
 }
 
