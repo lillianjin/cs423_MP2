@@ -48,9 +48,8 @@ int read_status(unsigned long pid){
         if(offset == -1){
             return 1;
         }else{
-            pid_line = strtok(line, ",");
-            printf("pid in line is %u", pid_line);
-            if(atoi(pid_line) == pid){
+            printf("pid in line is %u", strtok(line, ","));
+            if(strtoul(strtok(line, ","), NULL, 10) == pid){
                 return 0;
             }
         }
