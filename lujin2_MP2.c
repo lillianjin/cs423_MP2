@@ -143,6 +143,7 @@ static void mp2_register(unsigned int pid, unsigned int period, unsigned long pr
     spin_lock_irqsave(&sp_lock, flags);
     list_add(&(curr_task->task_node), &my_head);
     spin_unlock_irqrestore(&sp_lock, flags);
+    printk(KERN_ALERT "REGISTRATION MODULE LOADED\n");
 }
 
 
@@ -169,6 +170,8 @@ static void mp2_deregister(unsigned int pid) {
     }
 
     spin_unlock_irqrestore(&sp_lock, flags);
+    printk(KERN_ALERT "DEREGISTRATION MODULE LOADED\n");
+
 }
  
 
