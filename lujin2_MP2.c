@@ -90,6 +90,31 @@ t: user defined data
     spin_unlock_irqrestore(&sp_lock, flags);
  }
 
+ 
+/*
+This function is used to check the scheduling accuracy whenever a new task comes in.
+*/
+static bool my_admission_control(mp2_task_struct *new){
+    int tot_ratio = 0;
+    mp2_task_struct *temp;
+    unsigned long flags; 
+
+    // compute the existing ratio sum
+    spin_lock_irqsave(&sp_lock, flags);
+    list_for_each_entry(temp, &my_head, task_node){
+        tot_ratio += 1000 * temp->process_time / temp->task_period;
+    }
+    spin_unlock_irqrestore(&sp_lock, flags);
+    // add new ratio
+    tot_ratio += 1000 * new->process_time / new->task_period;
+    if(tot_ratio <= 693){
+        return true;
+    }else{
+        return false;
+    }
+}
+
+
 /*
 This function allows the application to notify to our kernel module its intent to use the RMS scheduler.
 */
@@ -241,28 +266,7 @@ static void mp2_yield(unsigned int pid) {
     printk(KERN_ALERT "YIELD MODULE LOADED\n");
 }
 
-/*
-This function is used to check the scheduling accuracy whenever a new task comes in.
-*/
-static bool my_admission_control(mp2_task_struct *new){
-    int tot_ratio = 0;
-    mp2_task_struct *temp;
-    unsigned long flags; 
 
-    // compute the existing ratio sum
-    spin_lock_irqsave(&sp_lock, flags);
-    list_for_each_entry(temp, &my_head, task_node){
-        tot_ratio += 1000 * temp->process_time / temp->task_period;
-    }
-    spin_unlock_irqrestore(&sp_lock, flags);
-    // add new ratio
-    tot_ratio += 1000 * new->process_time / new->task_period;
-    if(tot_ratio <= 693){
-        return true;
-    }else{
-        return false;
-    }
-}
 
 /*
 This function is called then the /proc file is read
