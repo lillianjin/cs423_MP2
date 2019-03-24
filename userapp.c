@@ -46,7 +46,7 @@ int read_status(unsigned long pid){
     while(1){
         curr = getline(&line, &n, f);
         if(curr == -1){
-            return 1;
+            break;
         }else{
             tmp = strtok(line, ",");
             printf("pid in line is %s", tmp);
