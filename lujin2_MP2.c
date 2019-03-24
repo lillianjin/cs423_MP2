@@ -227,7 +227,7 @@ static void mp2_yield(unsigned int pid) {
         // next period has not start
         if(tsk->next_period >= jiffies){
             tsk->task_state = SLEEPING;
-            mod_timer(&tsk->proc_time, tsk->next_period);
+            mod_timer(&tsk->process_time, tsk->next_period);
             set_task_state(tsk->task, TASK_UNINTERRUPTIBLE);
             cur_task = NULL;
             wake_up_process(dispatch_thread);
