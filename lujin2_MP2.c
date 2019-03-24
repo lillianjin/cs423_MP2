@@ -108,8 +108,10 @@ static bool my_admission_control(mp2_task_struct *new){
     // add new ratio
     tot_ratio += 1000 * new->process_time / new->task_period;
     if(tot_ratio <= 693){
+        printk(KERN_ALERT "MODULE %u PASSES ADMISSION CONTROL\n", temp->pid);
         return true;
     }else{
+        printk(KERN_ALERT "MODULE %u DOES NOT PASS ADMISSION CONTROL\n", temp->pid);
         return false;
     }
 }
