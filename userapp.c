@@ -3,7 +3,7 @@
 
 void REGISTER(unsigned int pid, unsigned int period, unsigned long process_time){
     FILE *f = fopen("/proc/mp2/status", "w");
-    fprintf(f, "R, %u, %lu. %lu", pid, period, process_time);
+    fprintf(f, "R, %u, %u. %lu", pid, period, process_time);
     fclose(f);
 }
 
@@ -34,7 +34,7 @@ int main(int argc, char* argv[]){
         return 1;
     }
 
-    pid = gitpid();
+    pid = getpid();
     period = strtoul(argv[1], NULL, 10);
     process_time = strtoul(argv[2], NULL, 10);
 
