@@ -102,7 +102,7 @@ int main(int argc, char* argv[]){
     printf("Registration succeeded.\n");
 
     // DEREGISTERATION
-    UNREGISTER(pid);
+    DEREGISTER(pid);
     if(my_read_status(pid)==1){
         printf("Unregistration failed.\n");
         return 0;
