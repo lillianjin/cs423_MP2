@@ -127,12 +127,18 @@ static void mp2_deregister(unsigned int pid) {
     mp2_task_struct *curr, *next;
     unsigned long flags; 
     spin_lock_irqsave(&sp_lock, flags);
-    list_for_each_entry_safe(curr, next, &my_head, task_node) {
-        // remove the task and destroy all data structure
-        del_timer(&(curr->wakeup_timer));
-        list_del(&curr->task_node);
-        kmem_cache_free(mp2_cache, curr);
-        }
+    
+    mp2_task_struct *curr = find_mptask_by_pid(pid);
+    curr->task_state = SLEEPING;
+    del_timer(&(curr->wakeup_timer));
+    list_del(&curr->task_node);
+    kmem_cache_free(mp2_cache, curr);
+
+    if(cur_task == curr){
+        cur_task = NULL;
+        wake_up_process(dispatch_thread);
+    }
+
     spin_unlock_irqrestore(&sp_lock, flags);
 }
  
