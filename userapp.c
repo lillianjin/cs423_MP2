@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
 #include <unistd.h>
 
 void REGISTER(unsigned int pid, unsigned int period, unsigned long process_time){
