@@ -34,7 +34,7 @@ void YIELD(unsigned int pid){
 }
 
 // check if the task is successfully registered in proc system
-int read_status(unsigned long pid){
+int read_status(unsigned int pid){
     // FILE *f = fopen("/proc/mp2/status", "r+");
     // ssize_t curr;
     // char *line, *tmp;
