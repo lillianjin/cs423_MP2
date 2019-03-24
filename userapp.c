@@ -54,6 +54,7 @@ int read_status(unsigned long pid){
             }
         }
     }
+    fclose(f);
     return 1;
 }
 
