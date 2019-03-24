@@ -35,28 +35,28 @@ void YIELD(unsigned int pid){
 
 // check if the task is successfully registered in proc system
 int my_read_status(unsigned int pid){
-    // FILE *f = fopen("/proc/mp2/status", "r+");
-    // ssize_t curr;
-    // char *line, *tmp;
-    // size_t n;
-    // if(!f){
-    //     perror("Proc file not exists!");
-    //     return 1;
-    // }
+    FILE *f = fopen("/proc/mp2/status", "r+");
+    ssize_t curr;
+    char *line, *tmp;
+    size_t n;
+    if(!f){
+        perror("Proc file not exists!");
+        return 1;
+    }
     printf("hererrer");
-    // while(1){
-    //     curr = getline(&line, &n, f);
-    //     if(curr == -1){
-    //         break;
-    //     }else{
-    //         tmp = strtok(line, ":");
-    //         printf("pid in line is %s", tmp);
-    //         if(strtoul(tmp, NULL, 10) == pid){
-    //             return 0;
-    //         }
-    //     }
-    // }
-    // fclose(f);
+    while(1){
+        curr = getline(&line, &n, f);
+        if(curr == -1){
+            break;
+        }else{
+            tmp = strtok(line, ":");
+            printf("pid in line is %s", tmp);
+            if(strtoul(tmp, NULL, 10) == pid){
+                return 0;
+            }
+        }
+    }
+    fclose(f);
     return 0;
 }
 
@@ -84,18 +84,18 @@ int main(int argc, char* argv[]){
 
     printf("pid is %u, period is %u, process_time is %lu, number of jobs is %d\n", pid, period, process_time, num);
 
-    // if(process_time > period){
-    //     perror("Period must be larger than process time");
-    //     return 0;
-    // }
+    if(process_time > period){
+        perror("Period must be larger than process time");
+        return 0;
+    }
 
     // REGISTERATION
-    // REGISTER(pid, period, process_time);
-    // if(my_read_status(pid)==0){
-    //     printf("Registration failed.\n");
-    //     return 0;
-    // }
-    // printf("Registration succeeded.\n");
+    REGISTER(pid, period, process_time);
+    if(my_read_status(pid)==0){
+        printf("Registration failed.\n");
+        return 0;
+    }
+    printf("Registration succeeded.\n");
 
 
 
