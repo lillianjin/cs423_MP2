@@ -102,12 +102,13 @@ static bool my_admission_control(mp2_task_struct *new){
     // compute the existing ratio sum
     spin_lock_irqsave(&sp_lock, flags);
     list_for_each_entry(temp, &my_head, task_node){
-        tot_ratio += 1000000 * temp->process_time / temp->task_period;
+        tot_ratio += 1000 * temp->process_time / temp->task_period;
     }
     spin_unlock_irqrestore(&sp_lock, flags);
     // add new ratio
-    tot_ratio += 1000000 * new->process_time / new->task_period;
-    if(tot_ratio <= 693000){
+    tot_ratio += 1000 * new->process_time / new->task_period;
+    printk(KERN_ALERT "RATIO IS %d\n", tot_ratio);
+    if(tot_ratio <= 693){
         printk(KERN_ALERT "MODULE %u PASSES ADMISSION CONTROL\n", temp->pid);
         return true;
     }else{
