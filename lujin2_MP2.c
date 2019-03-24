@@ -109,7 +109,7 @@ static void mp2_register(unsigned int pid, unsigned int period, unsigned long pr
     setup_timer(&curr_task->wakeup_timer, my_timer_function, (unsigned long)curr_task->pid);
 
     // check for admission_control
-    if(!admission_control(&curr_task)){
+    if(!my_admission_control(&curr_task)){
         return;
     }
 
@@ -244,7 +244,7 @@ static void mp2_yield(unsigned int pid) {
 /*
 This function is used to check the scheduling accuracy whenever a new task comes in.
 */
-static bool admission_control(mp2_task_struct *new){
+static bool my_admission_control(mp2_task_struct *new){
     unsigned int tot_ratio = 0;
     mp2_task_struct *temp;
     unsigned long flags; 
