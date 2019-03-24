@@ -181,7 +181,7 @@ static int dispatch_thread_function(void){
         }
         spin_lock_irqsave(&sp_lock, flags);
         printk(KERN_ALERT "DISPATCHING THREAD STARTS WORKING");
-        tsk = find_highest_prioty_tsk(cur_task);
+        tsk = find_highest_prioty_tsk();
         // current task has higher pirority/ lower period
         if(tsk != NULL){
             if(cur_task != NULL && cur_task->task_period > tsk->task_period){
