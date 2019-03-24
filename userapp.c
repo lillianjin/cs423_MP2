@@ -57,7 +57,7 @@ int read_status(unsigned int pid){
     //     }
     // }
     // fclose(f);
-    return 1;
+    return 0;
 }
 
 /*
@@ -74,7 +74,7 @@ int main(int argc, char* argv[]){
 
     if(argc != 4){
         perror("Please input the command again in the format of './userapp period process_time(in ms) num_of_jobs'" );
-        return 1;
+        return 0;
     }
 
     pid = getpid();
@@ -86,14 +86,14 @@ int main(int argc, char* argv[]){
 
     if(process_time > period){
         perror("Period must be larger than process time");
-        return 1;
+        return 0;
     }
 
     // REGISTERATION
     REGISTER(pid, period, process_time);
-    if(!read_status(pid)){
+    if(read_status(pid)){
         printf("Registration failed.\n");
-        return 1;
+        return 0;
     }
     printf("Registration succeeded.\n");
 
