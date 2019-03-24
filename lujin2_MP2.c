@@ -129,9 +129,11 @@ static void mp2_register(unsigned int pid, unsigned int period, unsigned long pr
     curr_task->task_period = period;
     curr_task->task_state = SLEEPING;
     curr_task->process_time = process_time;
-
+    
+    printk(KERN_ALERT "REGISTRATION TIMER LOADING\n");
     // Setup the wakeup timer function
     setup_timer(&curr_task->wakeup_timer, my_timer_function, (unsigned long)curr_task->pid);
+    printk(KERN_ALERT "REGISTRATION TIMER LOADED\n");
 
     // check for admission_control
     if(!my_admission_control(curr_task)){
