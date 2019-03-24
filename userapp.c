@@ -38,8 +38,8 @@ int my_read_status(unsigned int pid){
     FILE *f = fopen("/proc/mp2/status", "r+");
     ssize_t curr;
     char *tmp;
-    char line[100];
     size_t n;
+    char *line = malloc(4096);
     if(!f){
         perror("Proc file not exists!");
         return 1;
