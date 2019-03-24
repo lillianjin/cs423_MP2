@@ -109,7 +109,7 @@ static void mp2_register(unsigned int pid, unsigned int period, unsigned long pr
     setup_timer(&curr_task->wakeup_timer, my_timer_function, (unsigned long)curr_task->pid);
 
     // check for admission_control
-    if(!admission_control(curr_task)){
+    if(!admission_control(&curr_task)){
         return;
     }
 
