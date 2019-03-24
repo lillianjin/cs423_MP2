@@ -48,7 +48,7 @@ static mp2_task_struct *cur_task = NULL;
 // Declare proc filesystem entry
 static struct proc_dir_entry *proc_dir, *proc_entry;
 // Declare mutex lock
-struct mutex mutexLock;
+// struct mutex mutexLock;
 // Declare a slab cache
 static struct kmem_cache *mp2_cache;
 // Create a list head
@@ -85,8 +85,8 @@ t: user defined data
     if(tsk->task_state == SLEEPING){
         tsk->task_state = READY;
     }
-    spin_unlock_irqrestore(&sp_lock, flags);
     wake_up_process(dispatch_thread);
+    spin_unlock_irqrestore(&sp_lock, flags);
  }
 
 /*
@@ -110,9 +110,10 @@ static void mp2_register(unsigned int pid, unsigned int period, unsigned long pr
     // check for admission_control
 
     // add the task to task list
-    mutex_lock(&mutexLock);
+    unsigned long flags; 
+    spin_lock_irqsave(&sp_lock, flags);
     list_add(&(curr_task->task_node), &my_head);
-    mutex_unlock(&mutexLock);
+    spin_unlock_irqrestore(&sp_lock, flags);
 }
 
 
@@ -124,14 +125,15 @@ static void mp2_deregister(unsigned int pid) {
     printk(KERN_ALERT "DEREGISTRATION MODULE LOADING\n");
     #endif
     mp2_task_struct *curr, *next;
-    mutex_lock(&mutexLock);
+    unsigned long flags; 
+    spin_lock_irqsave(&sp_lock, flags);
     list_for_each_entry_safe(curr, next, &my_head, task_node) {
         // remove the task and destroy all data structure
         del_timer(&(curr->wakeup_timer));
         list_del(&curr->task_node);
         kmem_cache_free(mp2_cache, curr);
         }
-    mutex_unlock(&mutexLock);
+    spin_unlock_irqrestore(&sp_lock, flags);
 }
  
 
@@ -156,6 +158,7 @@ ssize_t mp2_read (struct file *filp, char __user *buf, size_t count, loff_t *off
     int copied = 0;
     mp2_task_struct *curr;
     char *buffer;
+    unsigned long flags; 
 
     // if the file is already read
     if(*offp > 0){
@@ -167,7 +170,7 @@ ssize_t mp2_read (struct file *filp, char __user *buf, size_t count, loff_t *off
     memset(buffer, 0, 4096);
 
     // Acquire the mutex
-    mutex_lock(&mutexLock);
+    spin_lock_irqsave(&sp_lock, flags);
 
     // record the location of current node inside "copied" after each entry
     list_for_each_entry(curr, &my_head, task_node){
@@ -180,7 +183,7 @@ ssize_t mp2_read (struct file *filp, char __user *buf, size_t count, loff_t *off
         kfree(buffer);
         return -EFAULT;
     }
-    mutex_unlock(&mutexLock);
+    spin_unlock_irqrestore(&sp_lock, flags);
 
     // set the end of string character with value 0 (NULL)
     buffer[copied] = '\0';
@@ -210,6 +213,7 @@ ssize_t mp2_write (struct file *filp, const char __user *buf, size_t count, loff
     unsigned int pid;
     unsigned long period;
     unsigned long process_time;
+    unsigned long flags; 
 
     memset(buffer, 0, 4096);
     // if the lengh of message is larger than buffer size or the file is already written, return
@@ -274,7 +278,7 @@ int __init mp2_init(void)
    // init a new cache of size sizeof(mp2_task_struct)
    mp2_cache = kmem_cache_create("mp2_cache", sizeof(mp2_task_struct), 0, SLAB_HWCACHE_ALIGN, NULL);
    
-   mutex_init(&mutexLock);
+//    mutex_init(&mutexLock);
    spin_lock_init(&sp_lock);
    printk(KERN_ALERT "MP2 MODULE LOADED\n");
    return 0;
@@ -289,9 +293,9 @@ void __exit mp2_exit(void)
    #endif
    // Insert your code here ...
     mp2_task_struct *pos, *next;
+    unsigned long flags; 
 
-
-    mutex_lock(&mutexLock);
+    spin_lock_irqsave(&sp_lock, flags);
     // Free the linked list
     list_for_each_entry_safe(pos, next, &my_head, task_node) {
         list_del(&pos->task_node);
@@ -299,10 +303,10 @@ void __exit mp2_exit(void)
         kmem_cache_free(mp2_cache, pos);
     }
     kmem_cache_destroy(mp2_cache);
-    mutex_unlock(&mutexLock);
+    spin_unlock_irqrestore(&sp_lock, flags);
 
     // destroy slab cache
-    mutex_destroy(&mutexLock);
+    // mutex_destroy(&mutexLock);
 
     /*
     remove /proc/mp2/status and /proc/mp2 using remove_proc_entry(*name, *parent)
