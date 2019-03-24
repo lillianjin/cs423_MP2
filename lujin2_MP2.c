@@ -109,7 +109,7 @@ static void mp2_register(unsigned int pid, unsigned int period, unsigned long pr
     setup_timer(&curr_task->wakeup_timer, my_timer_function, (unsigned long)curr_task->pid);
 
     // check for admission_control
-    if(! admission_control(curr_task)){
+    if(!admission_control(curr_task)){
         return;
     }
 
@@ -254,7 +254,7 @@ static bool admission_control(mp2_task_struct *new){
     list_for_each_entry(temp, &my_head, task_node){
         tot_ratio += 1000 * temp->process_time / temp->task_period;
     }
-    spin_lock_irqsave(&sp_lock, flags);
+    spin_unlock_irqrestore(&sp_lock, flags);
     // add new ratio
     tot_ratio += 1000 * new->process_time / new->task_period;
     return (tot_ratio <= 693);
