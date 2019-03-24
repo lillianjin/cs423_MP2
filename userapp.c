@@ -37,7 +37,7 @@ void YIELD(unsigned int pid){
 int my_read_status(unsigned int pid){
     FILE *f = fopen("/proc/mp2/status", "r+");
     ssize_t curr;
-    char *tmp;
+    char *tmp, *cur_pid;
     size_t n;
     char *line = malloc(4096);
     if(!f){
@@ -50,8 +50,10 @@ int my_read_status(unsigned int pid){
             break;
         }else{
             tmp = strtok(line, ":");
-            printf("pid in line is %s", tmp);
-            if(strtoul(tmp, NULL, 10) == pid){
+            printf("this line is %s", tmp);
+            cur_pid = strtok(tmp, ",")[0];
+            printf("the pid in line is %s", cur_pid);
+            if(strtoul(cur_pid, NULL, 10) == pid){
                 return 0;
             }
         }
