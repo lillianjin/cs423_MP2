@@ -258,7 +258,6 @@ static void mp2_yield(unsigned int pid) {
     unsigned long flags; 
     spin_lock_irqsave(&sp_lock, flags);
     mp2_task_struct *tsk = find_mptask_by_pid(pid);
-    spin_unlock_irqrestore(&sp_lock, flags);
     if(tsk != NULL && tsk->task != NULL){
         // printk(KERN_ALERT "tsk->next_period=%u, jiffies is %u, tsk->task_period is %u\n", tsk->next_period, jiffies, tsk->task_period);
         // if first time yield
@@ -282,6 +281,7 @@ static void mp2_yield(unsigned int pid) {
             return;
         }
     }
+    spin_unlock_irqrestore(&sp_lock, flags);
     printk(KERN_ALERT "YIELD MODULE LOADED\n");
 }
 
