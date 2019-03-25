@@ -221,6 +221,7 @@ static int dispatch_thread_function(void){
         spin_lock_irqsave(&sp_lock, flags);
         printk(KERN_ALERT "DISPATCHING THREAD STARTS WORKING");
         tsk = find_highest_prioty_tsk();
+
         // current task has higher pirority/ lower period
         if(tsk != NULL){
             // preempt current task if tsk has higher prioty
@@ -258,7 +259,7 @@ This function notifies the RMS scheduler that the application has finished its p
 */
 static void mp2_yield(unsigned int pid) {
     #ifdef DEBUG
-    printk(KERN_ALERT "YIELD MODULE LOADING\n");
+    printk(KERN_ALERT "TASK %u YIELD MODULE LOADING\n", pid);
     #endif
     unsigned long flags; 
     int should_skip;
@@ -293,7 +294,7 @@ static void mp2_yield(unsigned int pid) {
         spin_unlock_irqrestore(&sp_lock, flags);
         schedule();
     }
-    printk(KERN_ALERT "YIELD MODULE LOADED\n");
+    printk(KERN_ALERT "TASK %u YIELD MODULE LOADED\n", pid);
 }
 
 
