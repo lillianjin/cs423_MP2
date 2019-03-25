@@ -1,4 +1,11 @@
-# mp1 
+# mp2 
+
+## Implementation and Design Decisions
+1) mp2_init\
+Load the module and create proc directory and status file. \
+This function requires to initialize proc file directory, slab cache, spinlock, and dispatching thread.\\
+2) mp2_exit\
+Unload the proc 
 
 ## Command to run the program
 ### Basic Functions
