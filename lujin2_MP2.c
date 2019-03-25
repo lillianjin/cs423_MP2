@@ -62,15 +62,12 @@ Find task struct by pid
 */
 mp2_task_struct* find_mptask_by_pid(unsigned long pid)
 {
-    unsigned long flags; 
-    spin_lock_irqsave(&sp_lock, flags);
     mp2_task_struct* task;
     list_for_each_entry(task, &my_head, task_node) {
         if(task->pid == pid){
             return task;
         }
     }
-    spin_unlock_irqrestore(&sp_lock, flags);
     return NULL;
 }
 
@@ -188,17 +185,14 @@ static void mp2_deregister(unsigned int pid) {
 This function is used to find the highest priority task
 */
 static mp2_task_struct* find_highest_prioty_tsk(void){
-    unsigned long flags; 
     mp2_task_struct *curr, *highest;
-    unsigned long min_period = INT_MAX;
-    spin_lock_irqsave(&sp_lock, flags);
+    int min_period = INT_MAX;
     list_for_each_entry(curr, &my_head, task_node) {
         if((highest == NULL || curr->task_period < min_period) && curr->task_state == READY){
             highest = curr;
             min_period = curr->task_period;
         }
     }
-    spin_unlock_irqrestore(&sp_lock, flags);
     return highest;
 }
 
@@ -261,7 +255,9 @@ static void mp2_yield(unsigned int pid) {
     #endif
     unsigned long flags; 
     int should_skip;
+    spin_lock_irqsave(&sp_lock, flags);
     mp2_task_struct *tsk = find_mptask_by_pid(pid);
+    spin_unlock_irqrestore(&sp_lock, flags);
 
     if(tsk != NULL && tsk->task != NULL){
         // printk(KERN_ALERT "tsk->next_period=%u, jiffies is %u, tsk->task_period is %u\n", tsk->next_period, jiffies, tsk->task_period);
@@ -285,8 +281,8 @@ static void mp2_yield(unsigned int pid) {
         tsk->task_state = SLEEPING;
         spin_lock_irqsave(&sp_lock, flags);
         cur_task = NULL; 
-        spin_unlock_irqrestore(&sp_lock, flags);
         wake_up_process(dispatch_thread);
+        spin_unlock_irqrestore(&sp_lock, flags);
         set_task_state(tsk->task, TASK_UNINTERRUPTIBLE);
         schedule();
     }
