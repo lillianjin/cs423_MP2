@@ -69,12 +69,12 @@ void do_job(unsigned long time){
     struct timeval start, end;
     unsigned long long t0, t1;
     gettimeofday(&start, NULL);
-    t1 = (unsigned long long)start.tv_sec * 1000000 + start.tv_usec
+    t1 = (unsigned long long)start.tv_sec * 1000000 + start.tv_usec;
 	for(int i=0; i<100000000; i++){
 		for(int j=20; j > 0; j--){
 			res = res * j;
             gettimeofday(&end, NULL);
-            t2 = (unsigned long long)end.tv_sec * 1000000 + end.tv_usec
+            t2 = (unsigned long long)end.tv_sec * 1000000 + end.tv_usec;
             if(t2 - t1 >= time){
                 return;
             }
