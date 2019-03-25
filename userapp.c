@@ -55,7 +55,7 @@ int my_read_status(unsigned int pid){
             return answer;
         }else{
             tmp = strtok(line, ":");
-            printf("%s\n", tmp);
+            printf("%s", tmp);
             cur_pid = strtok(tmp, ",");
             // printf("the pid in line is %s", cur_pid);
             if(strtoul(cur_pid, NULL, 10) == pid){
