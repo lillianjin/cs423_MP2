@@ -119,10 +119,10 @@ int main(int argc, char* argv[]){
     t = 0;
     while(t < num){
         gettimeofday(&start, NULL);
-        printf("job %d is running, pid: %u, start time:\t%llu ms\n", t, pid, (unsigned long long)(start.tv_usec * 1000));
+        printf("job %d is running, pid: %u, start time:\t%llu ms\n", t, pid, (unsigned long long)(start.tv_usec));
         do_job();
         gettimeofday(&end, NULL);
-        printf("job %d finished, pid: %u, end time:\t%llu ms\n", t, pid, (unsigned long long)(end.tv_usec * 1000));
+        printf("job %d finished, pid: %u, end time:\t%llu ms\n", t, pid, (unsigned long long)(end.tv_usec));
         YIELD(pid);
         t++;
     }
