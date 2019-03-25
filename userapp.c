@@ -130,12 +130,12 @@ int main(int argc, char* argv[]){
 
     
     // DEREGISTERATION
-    // DEREGISTER(pid);
-    // if(my_read_status(pid)==1){
-    //     printf("Unregistration failed.\n");
-    //     return 0;
-    // }
-    // printf("Unregistration succeeded.\n");
+    DEREGISTER(pid);
+    if(my_read_status(pid)==1){
+        printf("Unregistration failed.\n");
+        return 0;
+    }
+    printf("Unregistration succeeded.\n");
 
 
 
