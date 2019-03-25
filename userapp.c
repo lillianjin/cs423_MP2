@@ -65,9 +65,11 @@ int my_read_status(unsigned int pid){
 }
 
 void do_job(){
-    long long res;
-    for(int i=0; i<10000000; i++){
-		res += i;
+    long long res = 1;
+	for(int i=0; i<100000000; i++){
+		for(int j=20; j > 0; j--){
+			res = res * j;
+		}
 	}
 }
 
@@ -128,12 +130,12 @@ int main(int argc, char* argv[]){
 
     
     // DEREGISTERATION
-    DEREGISTER(pid);
-    if(my_read_status(pid)==1){
-        printf("Unregistration failed.\n");
-        return 0;
-    }
-    printf("Unregistration succeeded.\n");
+    // DEREGISTER(pid);
+    // if(my_read_status(pid)==1){
+    //     printf("Unregistration failed.\n");
+    //     return 0;
+    // }
+    // printf("Unregistration succeeded.\n");
 
 
 

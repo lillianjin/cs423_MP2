@@ -37,7 +37,7 @@ typedef struct mp2_task_struct {
 
     unsigned int pid;
     unsigned int task_period; // the priority in RMS
-    unsigned int next_period; 
+    unsigned long next_period; 
     unsigned int task_state;
     unsigned long process_time;
 } mp2_task_struct;
@@ -270,11 +270,11 @@ static void mp2_yield(unsigned int pid) {
             should_skip = tsk->next_period < jiffies ? 1 : 0;
         }
         // only if next period has not start
-        printk(KERN_ALERT "tsk->next_period - jiffies is %u\n", tsk->next_period-jiffies);
-        // if(should_skip){
-        //     printk(KERN_ALERT "SKIP THIS TASK\n");
-        //     return;
-        // }
+        printk(KERN_ALERT "tsk->next_period - jiffies is %lu\n", tsk->next_period-jiffies);
+        if(should_skip){
+            printk(KERN_ALERT "SKIP THIS TASK\n");
+            return;
+        }
         printk(KERN_ALERT "START SLEEPING\n");
         // set the timer and put the task to sleep
         mod_timer(&(tsk->wakeup_timer), tsk->next_period);
