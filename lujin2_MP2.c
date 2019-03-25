@@ -107,7 +107,7 @@ static bool my_admission_control(mp2_task_struct *new){
     spin_unlock_irqrestore(&sp_lock, flags);
     // add new ratio
     tot_ratio += 1000 * new->process_time / new->task_period;
-    printk(KERN_ALERT "RATIO IS %lu\n", tot_ratio);
+    // printk(KERN_ALERT "RATIO IS %lu\n", tot_ratio);
     if(tot_ratio <= 693){
         printk(KERN_ALERT "MODULE %u PASSES ADMISSION CONTROL\n", new->pid);
         return true;
@@ -202,6 +202,7 @@ static mp2_task_struct* find_highest_prioty_tsk(void){
 This function dispatches thread to switch next highest priority ready task
 */
 static int dispatch_thread_function(void){
+    printk(KERN_ALERT "DISPATCHING THREAD FUNCTION START");
     mp2_task_struct *tsk;
     unsigned long flags; 
     struct sched_param sparam;
@@ -239,6 +240,8 @@ static int dispatch_thread_function(void){
         }
         spin_unlock_irqrestore(&sp_lock, flags);
     }
+    printk(KERN_ALERT "DISPATCHING THREAD FUNCTION END");
+
     return 0;
 }
 
