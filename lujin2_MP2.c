@@ -268,8 +268,8 @@ static void mp2_yield(unsigned int pid) {
             should_skip = jiffies > tsk->next_period ? 1 : 0;
         }
         // only if next period has not start
-        printk(KERN_ALERT "tsk->next_period=%u, jiffies is %u, tsk->task_period is %u\n", tsk->next_period, jiffies, tsk->task_period);
-        printk(KERN_ALERT "tsk->next_period - jiffies is %lu\n", tsk->next_period-jiffies);
+        printk(KERN_ALERT "tsk->next_period=%lu, jiffies is %lu, tsk->task_period is %lu\n", tsk->next_period, jiffies, tsk->task_period);
+        printk(KERN_ALERT "tsk->next_period - jiffies is %lu\n", tsk->next_period - jiffies);
         if(should_skip){
             printk(KERN_ALERT "SKIP THIS TASK\n");
             return;
