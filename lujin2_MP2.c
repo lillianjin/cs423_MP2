@@ -256,6 +256,7 @@ static void mp2_yield(unsigned int pid) {
     printk(KERN_ALERT "YIELD MODULE LOADING\n");
     #endif
     unsigned long flags; 
+    int should_skip;
     spin_lock_irqsave(&sp_lock, flags);
     mp2_task_struct *tsk = find_mptask_by_pid(pid);
     spin_unlock_irqrestore(&sp_lock, flags);
@@ -265,13 +266,14 @@ static void mp2_yield(unsigned int pid) {
         // if first time yield
         if(tsk->next_period == 0){
             tsk->next_period = jiffies + msecs_to_jiffies(tsk->task_period);
+            should_skip = 0;
         }else{
             tsk->next_period += msecs_to_jiffies(tsk->task_period);
+            should_skip = tsk->next_period < jiffies ? 1 : 0;
         }
-        printk(KERN_ALERT "tsk->next_period=%u, jiffies is %u\n", tsk->next_period, jiffies);
         // only if next period has not start
         printk(KERN_ALERT "tsk->next_period - jiffies is %u\n", tsk->next_period-jiffies);
-        if(tsk->next_period < jiffies){
+        if(should_skip){
             printk(KERN_ALERT "SKIP THIS TASK\n");
             return;
         }
