@@ -219,11 +219,10 @@ static int dispatch_thread_function(void){
         spin_lock_irqsave(&sp_lock, flags);
         printk(KERN_ALERT "DISPATCHING THREAD STARTS WORKING");
         tsk = find_highest_prioty_tsk();
-        printk(KERN_ALERT "find_highest_prioty_tsk");
         // current task has higher pirority/ lower period
         if(tsk != NULL){
-            // preempt current task
-            if(cur_task != NULL && cur_task->task_period > tsk->task_period){
+            // preempt current task if tsk has higher prioty
+            if(cur_task != NULL && cur_task->task_state == RUNNING){
                 cur_task->task_state = READY;
                 sparam.sched_priority = 0;
                 sched_setscheduler(tsk->task, SCHED_NORMAL, &sparam);
