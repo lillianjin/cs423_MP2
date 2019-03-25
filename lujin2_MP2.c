@@ -282,7 +282,7 @@ static void mp2_yield(unsigned int pid) {
         mod_timer(&(tsk->wakeup_timer), tsk->next_period);
         tsk->task_state = SLEEPING;
         spin_lock_irqsave(&sp_lock, flags);
-        cur_task = NULL;
+        cur_task = NULL; 
         spin_unlock_irqrestore(&sp_lock, flags);
         wake_up_process(dispatch_thread);
         set_task_state(tsk->task, TASK_UNINTERRUPTIBLE);
