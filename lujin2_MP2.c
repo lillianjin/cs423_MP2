@@ -37,7 +37,7 @@ typedef struct mp2_task_struct {
 
     unsigned int pid;
     unsigned int task_period; // the priority in RMS
-    unsigned long next_period; 
+    unsigned long next_period; //jiffies
     unsigned int task_state;
     unsigned long process_time;
 } mp2_task_struct;
@@ -267,7 +267,7 @@ static void mp2_yield(unsigned int pid) {
             should_skip = 0;
         }else{
             tsk->next_period += msecs_to_jiffies(tsk->task_period);
-            should_skip = tsk->next_period < jiffies ? 1 : 0;
+            should_skip = jiffies > tsk->next_period ? 1 : 0;
         }
         // only if next period has not start
         printk(KERN_ALERT "tsk->next_period - jiffies is %lu\n", tsk->next_period-jiffies);
