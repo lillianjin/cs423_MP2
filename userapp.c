@@ -75,7 +75,7 @@ void do_job(unsigned long time){
 			res = res * j;
             gettimeofday(&end, NULL);
             t1 = (unsigned long long)end.tv_sec * 1000000 + end.tv_usec;
-            if(t1 - t0 >= time){
+            if(t1 - t0 >= time*1000 ){
                 return;
             }
 		}
