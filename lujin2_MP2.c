@@ -222,16 +222,17 @@ static int dispatch_thread_function(void){
         tsk = find_highest_prioty_tsk();
         // current task has higher pirority/ lower period
         if(tsk != NULL){
+            // preempt current task
             if(cur_task != NULL && cur_task->task_period > tsk->task_period){
                 cur_task->task_state = READY;
                 sparam.sched_priority = 0;
                 sched_setscheduler(tsk->task, SCHED_NORMAL, 0);
-                // let the higher piority task to run
-                tsk->task_state = RUNNING;
-                wake_up_process(tsk->task);
-                sched_setscheduler(tsk->task, SCHED_FIFO, 99);
-                cur_task = tsk;
             }
+            // let the higher piority task to run
+            tsk->task_state = RUNNING;
+            wake_up_process(tsk->task);
+            sched_setscheduler(tsk->task, SCHED_FIFO, 99);
+            cur_task = tsk;
         }else{
             //if no task is ready
             if(cur_task != NULL){
@@ -254,9 +255,10 @@ static void mp2_yield(unsigned int pid) {
     #ifdef DEBUG
     printk(KERN_ALERT "YIELD MODULE LOADING\n");
     #endif
-    mp2_task_struct *tsk = find_mptask_by_pid(pid);
     unsigned long flags; 
     spin_lock_irqsave(&sp_lock, flags);
+    mp2_task_struct *tsk = find_mptask_by_pid(pid);
+    spin_unlock_irqrestore(&sp_lock, flags);
     if(tsk != NULL && tsk->task != NULL){
         printk(KERN_ALERT "tsk->next_period=%u, jiffies is %u, tsk->task_period is %u\n", tsk->next_period, jiffies, tsk->task_period);
         // if first time yield
@@ -266,13 +268,13 @@ static void mp2_yield(unsigned int pid) {
             tsk->next_period += msecs_to_jiffies(tsk->task_period);
         }
         printk(KERN_ALERT "tsk->next_period=%u, jiffies is %u\n", tsk->next_period, jiffies);
-        // if next period has not start
+        // only if next period has not start
         if(tsk->next_period >= jiffies){
             printk(KERN_ALERT "START SLEEPING\n");
-            tsk->task_state = SLEEPING;
+            // set the timer and put the task to sleep
             mod_timer(&(tsk->wakeup_timer), tsk->next_period);
+            tsk->task_state = SLEEPING;
             set_task_state(tsk->task, TASK_UNINTERRUPTIBLE);
-            cur_task = NULL;
             wake_up_process(dispatch_thread);
             schedule();
         }else{
@@ -280,7 +282,6 @@ static void mp2_yield(unsigned int pid) {
             return;
         }
     }
-    spin_unlock_irqrestore(&sp_lock, flags);
     printk(KERN_ALERT "YIELD MODULE LOADED\n");
 }
 

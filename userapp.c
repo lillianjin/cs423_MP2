@@ -66,7 +66,7 @@ int my_read_status(unsigned int pid){
 
 void do_job(){
     long long res;
-    for(int i=0; i<100000; i++){
+    for(int i=0; i<10000000; i++){
 		res += i;
 	}
 }
