@@ -95,7 +95,7 @@ t: user defined data
 This function is used to check the scheduling accuracy whenever a new task comes in.
 */
 static bool my_admission_control(mp2_task_struct *new){
-    int tot_ratio = 0;
+    unsigned long tot_ratio = 0;
     mp2_task_struct *temp;
     unsigned long flags; 
 
@@ -107,12 +107,12 @@ static bool my_admission_control(mp2_task_struct *new){
     spin_unlock_irqrestore(&sp_lock, flags);
     // add new ratio
     tot_ratio += 1000 * new->process_time / new->task_period;
-    printk(KERN_ALERT "RATIO IS %d\n", tot_ratio);
+    printk(KERN_ALERT "RATIO IS %lu\n", tot_ratio);
     if(tot_ratio <= 693){
-        printk(KERN_ALERT "MODULE %u PASSES ADMISSION CONTROL\n", temp->pid);
+        printk(KERN_ALERT "MODULE %u PASSES ADMISSION CONTROL\n", new->pid);
         return true;
     }else{
-        printk(KERN_ALERT "MODULE %u DOES NOT PASS ADMISSION CONTROL\n", temp->pid);
+        printk(KERN_ALERT "MODULE %u DOES NOT PASS ADMISSION CONTROL\n", new->pid);
         return false;
     }
 }
