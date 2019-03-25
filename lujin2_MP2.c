@@ -197,14 +197,15 @@ static mp2_task_struct* find_highest_prioty_tsk(void){
     return highest;
 }
 
+
 /*
 This function dispatches thread to switch next highest priority ready task
 */
 static int dispatch_thread_function(void){
-    printk(KERN_ALERT "DISPATCHING THREAD FUNCTION START");
-    mp2_task_struct *tsk;
+    // printk(KERN_ALERT "DISPATCHING THREAD FUNCTION START");
+    mp2_task_struct *tsk = NULL;
     unsigned long flags; 
-    struct sched_param sparam;
+    struct sched_param sparam1, sparam2;
 
     while(1){
         tsk = NULL;
@@ -216,6 +217,7 @@ static int dispatch_thread_function(void){
             printk(KERN_ALERT "DISPATCHING THREAD FINISHED WORKING");
             return 0;
         }
+
         spin_lock_irqsave(&sp_lock, flags);
         printk(KERN_ALERT "DISPATCHING THREAD STARTS WORKING");
         tsk = find_highest_prioty_tsk();
@@ -225,15 +227,15 @@ static int dispatch_thread_function(void){
             if(cur_task != NULL){
                 if(cur_task->task_state == RUNNING){
                     cur_task->task_state = READY;
+                    sparam1.sched_priority = 0;
+                    sched_setscheduler(tsk->task, SCHED_NORMAL, &sparam1);
                 }
-                sparam.sched_priority = 0;
-                sched_setscheduler(tsk->task, SCHED_NORMAL, &sparam);
             }
             // let the higher piority task to run
             tsk->task_state = RUNNING;
             wake_up_process(tsk->task);
-            sparam.sched_priority = 99;
-            sched_setscheduler(tsk->task, SCHED_FIFO, &sparam);
+            sparam2.sched_priority = 99;
+            sched_setscheduler(tsk->task, SCHED_FIFO, &sparam2);
             cur_task = tsk;
         }else{
             //if no task is ready
@@ -245,7 +247,6 @@ static int dispatch_thread_function(void){
         }
         spin_unlock_irqrestore(&sp_lock, flags);
     }
-    printk(KERN_ALERT "DISPATCHING THREAD FUNCTION END");
 
     return 0;
 }
@@ -274,10 +275,10 @@ static void mp2_yield(unsigned int pid) {
             should_skip = jiffies > tsk->next_period ? 1 : 0;
         }
         // only if next period has not start
-        printk(KERN_ALERT "tsk->next_period=%lu, jiffies is %lu, tsk->task_period is %lu\n", tsk->next_period, jiffies, tsk->task_period);
-        printk(KERN_ALERT "tsk->next_period - jiffies is %lu\n", tsk->next_period - jiffies);
+        // printk(KERN_ALERT "tsk->next_period=%lu, jiffies is %lu, tsk->task_period is %lu\n", tsk->next_period, jiffies, tsk->task_period);
+        // printk(KERN_ALERT "tsk->next_period - jiffies is %lu\n", tsk->next_period - jiffies);
         if(should_skip){
-            printk(KERN_ALERT "SKIP THIS TASK\n");
+            printk(KERN_ALERT "SKIP THIS SLEEPING\n");
             return;
         }
         printk(KERN_ALERT "START SLEEPING\n");
@@ -325,7 +326,7 @@ ssize_t mp2_read (struct file *filp, char __user *buf, size_t count, loff_t *off
     // record the location of current node inside "copied" after each entry
     list_for_each_entry(curr, &my_head, task_node){
         copied += sprintf(buffer + copied, "%u, %u, %u, %lu\n", curr->pid, curr->task_state, curr->task_period, curr->process_time);
-        printk(KERN_ALERT "I AM READING: %s, %u, %u, %u, %lu\n", buffer, curr->pid, curr->task_state, curr-> task_period, curr->process_time);
+        // printk(KERN_ALERT "I AM READING: %s, %u, %u, %u, %lu\n", buffer, curr->pid, curr->task_state, curr-> task_period, curr->process_time);
     }
 
     // if the message length is larger than buffer size
