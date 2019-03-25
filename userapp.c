@@ -122,7 +122,7 @@ int main(int argc, char* argv[]){
         printf("job %d is running, pid: %u, start time:\t%llu ms\n", t, pid, (unsigned long long)(start.tv_sec * 1000));
         do_job();
         gettimeofday(&end, NULL);
-        printf("job %d finished, pid: %u, end time:\t%llu ms\n", t, pid, (unsigned long long)(end.tv_sec * 1000));
+        printf("job %d finished, pid: %u, end time:    \t%llu ms\n", t, pid, (unsigned long long)(end.tv_sec * 1000));
         YIELD(pid);
         t++;
     }
