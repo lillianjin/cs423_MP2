@@ -64,11 +64,17 @@ int my_read_status(unsigned int pid){
     return 0;
 }
 
-void do_job(){
+void do_job(unsigned long time){
     long long res = 1;
+    struct timeval start, end;
+    gettimeofday(&start, NULL);
 	for(int i=0; i<100000000; i++){
 		for(int j=20; j > 0; j--){
 			res = res * j;
+            gettimeofday(&end, NULL);
+            if((end.tv_sec - start.tv_sec) >= time){
+                return;
+            }
 		}
 	}
 }
@@ -120,7 +126,7 @@ int main(int argc, char* argv[]){
     while(t < num){
         gettimeofday(&start, NULL);
         printf("job %d is running, pid: %u, start time:\t%llu ms\n", t, pid, (unsigned long long)(start.tv_sec * 1000));
-        do_job();
+        do_job(process_time);
         gettimeofday(&end, NULL);
         printf("job %d finished, pid: %u, end time:    \t%llu ms\n", t, pid, (unsigned long long)(end.tv_sec * 1000));
         YIELD(pid);
