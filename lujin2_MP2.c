@@ -227,6 +227,7 @@ static int dispatch_thread_function(void){
             if(cur_task != NULL){
                 if(cur_task->task_state == RUNNING){
                     cur_task->task_state = READY;
+                    set_task_state(cur->task, TASK_INTERRUPTIBLE);
                     sparam1.sched_priority = 0;
                     sched_setscheduler(tsk->task, SCHED_NORMAL, &sparam1);
                 }
