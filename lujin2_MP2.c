@@ -254,7 +254,7 @@ static void mp2_yield(unsigned int pid) {
     unsigned long flags; 
     spin_lock_irqsave(&sp_lock, flags);
     if(tsk != NULL && tsk->task != NULL){
-        printk(KERN_ALERT "tsk->next_period=%u\n", tsk->next_period);
+        printk(KERN_ALERT "tsk->next_period=%u, jiffies is %u\n", tsk->next_period, jiffies);
         // if first time yield
         if(tsk->next_period==0){
             tsk->next_period += jiffies + msecs_to_jiffies(tsk->task_period);
