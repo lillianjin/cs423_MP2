@@ -130,6 +130,7 @@ static void mp2_register(unsigned int pid, unsigned int period, unsigned long pr
     curr_task->task = find_task_by_pid(pid);
     curr_task->pid = pid;
     curr_task->task_period = period;
+    curr_task->next_period = 0;
     curr_task->task_state = SLEEPING;
     curr_task->process_time = process_time;
     
