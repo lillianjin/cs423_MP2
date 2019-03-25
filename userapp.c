@@ -114,7 +114,6 @@ int main(int argc, char* argv[]){
     // gettimeofday(&init, NULL);
     printf("Yield begins.\n");
     YIELD(pid);
-    printf("Yield 1 succeeded.\n");
     t = 0;
     while(t < num){
         gettimeofday(&start, NULL);

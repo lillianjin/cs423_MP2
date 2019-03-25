@@ -364,8 +364,8 @@ ssize_t mp2_write (struct file *filp, const char __user *buf, size_t count, loff
                 break;
             case YIELD:
                 sscanf(buffer + 3, "%u\n", &pid);
+                mp2_yield(pid);
                 break;
-            mp2_yield(pid);
             case DEREGISTRATION:
                 sscanf(buffer + 3, "%u\n", &pid);
                 mp2_deregister(pid);
@@ -376,7 +376,7 @@ ssize_t mp2_write (struct file *filp, const char __user *buf, size_t count, loff
         }
     }
 
-    printk(KERN_ALERT "I AM WRITING: %s, parse results: pid %u, period %u, process_time %lu\n", buffer, pid, period, process_time);
+    // printk(KERN_ALERT "I AM WRITING: %s, parse results: pid %u, period %u, process_time %lu\n", buffer, pid, period, process_time);
 
     kfree(buffer);
     return count;
