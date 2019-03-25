@@ -187,9 +187,11 @@ static mp2_task_struct* find_highest_prioty_tsk(void){
     mp2_task_struct *curr, *highest = NULL;
     int min_period = INT_MAX;
     list_for_each_entry(curr, &my_head, task_node) {
-        if((highest == NULL || curr->task_period < min_period) && curr->task_state == READY){
-            highest = curr;
-            min_period = curr->task_period;
+        if(curr->task_state == READY){
+            if(highest == NULL || curr->task_period < min_period){
+                highest = curr;
+                min_period = curr->task_period;
+            }
         }
     }
     return highest;
