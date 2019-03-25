@@ -407,7 +407,7 @@ int __init mp2_init(void)
    // init a new cache of size sizeof(mp2_task_struct)
    mp2_cache = kmem_cache_create("mp2_cache", sizeof(mp2_task_struct), 0, SLAB_HWCACHE_ALIGN, NULL);
    
-   dispatch_thread=kthread_run(dispatch_thread_function, NULL, "dispatch_thread");
+   dispatch_thread=kthread_create(dispatch_thread_function, NULL, "dispatch_thread");
 
    spin_lock_init(&sp_lock);
    printk(KERN_ALERT "MP2 MODULE LOADED\n");
@@ -435,8 +435,6 @@ void __exit mp2_exit(void)
     kmem_cache_destroy(mp2_cache);
     spin_unlock_irqrestore(&sp_lock, flags);
 
-    // destroy slab cache
-    // mutex_destroy(&mutexLock);
 
     /*
     remove /proc/mp2/status and /proc/mp2 using remove_proc_entry(*name, *parent)
