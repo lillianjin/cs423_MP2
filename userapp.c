@@ -45,7 +45,7 @@ int my_read_status(unsigned int pid){
         perror("Proc file not exists!");
         return 0;
     }
-    printf("Task in /proc/mp2/status are listed: \n", tmp);
+    printf("Task in /proc/mp2/status are listed: \n");
     while(1){
         curr = getline(&line, &n, f);
         // printf("curr is %ld\n", curr);
@@ -53,7 +53,7 @@ int my_read_status(unsigned int pid){
             break;
         }else{
             tmp = strtok(line, ":");
-            printf("this line is %s\n", tmp);
+            printf("%s\n", tmp);
             cur_pid = strtok(tmp, ",");
             // printf("the pid in line is %s\n", cur_pid);
             if(strtoul(cur_pid, NULL, 10) == pid){
