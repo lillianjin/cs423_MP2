@@ -168,11 +168,11 @@ static void mp2_deregister(unsigned int pid) {
     stop = find_mptask_by_pid(pid);
     stop->task_state = SLEEPING;
     if(cur_task != NULL && cur_task->pid == pid){
-        del_timer(&(stop->wakeup_timer));
-        list_del(&(stop->task_node));
-        kmem_cache_free(mp2_cache, stop);
+        cur_task = NULL;
     }
-    cur_task = NULL;
+    del_timer(&(stop->wakeup_timer));
+    list_del(&(stop->task_node));
+    kmem_cache_free(mp2_cache, stop);
     spin_unlock_irqrestore(&sp_lock, flags);
 
     printk(KERN_ALERT "DEREGISTRATION MODULE LOADED\n");
