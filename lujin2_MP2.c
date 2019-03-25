@@ -205,6 +205,7 @@ static int dispatch_thread_function(void){
     struct sched_param sparam;
 
     while(1){
+        tsk = NULL;
         // put dispatching thread to sleep
         set_current_state(TASK_INTERRUPTIBLE);
         schedule();
