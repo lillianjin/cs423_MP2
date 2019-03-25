@@ -131,7 +131,7 @@ int main(int argc, char* argv[]){
         printf("job %d is running, pid: %u, start time:\t%llu.%llu\n", t, pid, (unsigned long long)start.tv_sec, (unsigned long long)start.tv_usec);
         do_job(process_time);
         gettimeofday(&end, NULL);
-        printf("job %d finished, pid: %u, end time:    \t%llu.%llu\n", t, pid, (unsigned long long)end.tv_sec, (unsigned long long)start.tv_usec);
+        printf("job %d finished, pid: %u, end time:    \t%llu.%llu\n", t, pid, (unsigned long long)end.tv_sec, (unsigned long long)end.tv_usec);
         YIELD(pid);
         t++;
     }

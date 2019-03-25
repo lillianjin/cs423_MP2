@@ -167,8 +167,8 @@ static void mp2_deregister(unsigned int pid) {
     spin_lock_irqsave(&sp_lock, flags);
     stop = find_mptask_by_pid(pid);
     stop->task_state = SLEEPING;
-    if(cur_task != NULL && cur_task->pid == pid){
-        cur_task = NULL;
+    cur_task = NULL;
+    if(cur_task->pid == pid){
         del_timer(&(stop->wakeup_timer));
         list_del(&(stop->task_node));
         kmem_cache_free(mp2_cache, stop);
