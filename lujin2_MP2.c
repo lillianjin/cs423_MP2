@@ -275,6 +275,9 @@ static void mp2_yield(unsigned int pid) {
             cur_task = NULL;
             wake_up_process(dispatch_thread);
             schedule();
+        }else{
+            printk(KERN_ALERT "SKIP THIS TASK\n");
+            break;
         }
     }
     spin_unlock_irqrestore(&sp_lock, flags);
