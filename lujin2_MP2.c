@@ -408,6 +408,7 @@ int __init mp2_init(void)
    mp2_cache = kmem_cache_create("mp2_cache", sizeof(mp2_task_struct), 0, SLAB_HWCACHE_ALIGN, NULL);
    
    dispatch_thread=kthread_create(dispatch_thread_function, NULL, "dispatch_thread");
+   get_task_struct(dispatch_thread);
 
    spin_lock_init(&sp_lock);
    printk(KERN_ALERT "MP2 MODULE LOADED\n");
@@ -435,7 +436,8 @@ void __exit mp2_exit(void)
     kmem_cache_destroy(mp2_cache);
     spin_unlock_irqrestore(&sp_lock, flags);
 
-
+    kthread_stop(dispatch_thread);
+    put_task_struct(dispatch_thread);
     /*
     remove /proc/mp2/status and /proc/mp2 using remove_proc_entry(*name, *parent)
     Removes the entry name in the directory parent from the procfs
