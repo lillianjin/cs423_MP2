@@ -260,7 +260,7 @@ static void mp2_yield(unsigned int pid) {
     mp2_task_struct *tsk = find_mptask_by_pid(pid);
     spin_unlock_irqrestore(&sp_lock, flags);
     if(tsk != NULL && tsk->task != NULL){
-        printk(KERN_ALERT "tsk->next_period=%u, jiffies is %u, tsk->task_period is %u\n", tsk->next_period, jiffies, tsk->task_period);
+        // printk(KERN_ALERT "tsk->next_period=%u, jiffies is %u, tsk->task_period is %u\n", tsk->next_period, jiffies, tsk->task_period);
         // if first time yield
         if(tsk->next_period == 0){
             tsk->next_period += jiffies + msecs_to_jiffies(tsk->task_period);
@@ -269,7 +269,7 @@ static void mp2_yield(unsigned int pid) {
         }
         printk(KERN_ALERT "tsk->next_period=%u, jiffies is %u\n", tsk->next_period, jiffies);
         // only if next period has not start
-        if(tsk->next_period >= jiffies){
+        if(tsk->next_period < jiffies){
             printk(KERN_ALERT "START SLEEPING\n");
             // set the timer and put the task to sleep
             mod_timer(&(tsk->wakeup_timer), tsk->next_period);
