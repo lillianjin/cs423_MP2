@@ -41,6 +41,7 @@ int my_read_status(unsigned int pid){
     char *tmp, *cur_pid;
     size_t n;
     char *line = malloc(4096);
+    int answer = 0;
     if(!f){
         perror("Proc file not exists!");
         return 0;
@@ -50,19 +51,18 @@ int my_read_status(unsigned int pid){
         curr = getline(&line, &n, f);
         // printf("curr is %ld\n", curr);
         if(curr == 1){
-            break;
+            fclose(f);
+            return answer;
         }else{
             tmp = strtok(line, ":");
             printf("%s\n", tmp);
             cur_pid = strtok(tmp, ",");
             // printf("the pid in line is %s\n", cur_pid);
             if(strtoul(cur_pid, NULL, 10) == pid){
-                return 1;
+                answer = 1;
             }
         }
     }
-    fclose(f);
-    return 0;
 }
 
 void do_job(unsigned long time){
