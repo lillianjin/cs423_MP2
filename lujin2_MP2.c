@@ -277,7 +277,7 @@ static void mp2_yield(unsigned int pid) {
             schedule();
         }else{
             printk(KERN_ALERT "SKIP THIS TASK\n");
-            break;
+            return;
         }
     }
     spin_unlock_irqrestore(&sp_lock, flags);
