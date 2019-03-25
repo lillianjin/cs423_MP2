@@ -239,11 +239,11 @@ static int dispatch_thread_function(void){
             sched_setscheduler(tsk->task, SCHED_FIFO, &sparam2);
             cur_task = tsk;
         }else{
-            //if no task is ready
-            // if(cur_task != NULL){
-            //     sparam.sched_priority = 0;
-            //     sched_setscheduler(tsk->task, SCHED_NORMAL, &sparam);
-            // }
+            // if no task is ready
+            if(cur_task != NULL){
+                sparam1.sched_priority = 0;
+                sched_setscheduler(tsk->task, SCHED_NORMAL, &sparam1);
+            }
             printk(KERN_ALERT "NO TASK FOUND");
         }
         spin_unlock_irqrestore(&sp_lock, flags);
