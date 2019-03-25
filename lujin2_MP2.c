@@ -276,13 +276,13 @@ static void mp2_yield(unsigned int pid) {
         }
         printk(KERN_ALERT "START SLEEPING\n");
         // set the timer and put the task to sleep
+        spin_lock_irqsave(&sp_lock, flags);
         mod_timer(&(tsk->wakeup_timer), tsk->next_period);
         tsk->task_state = SLEEPING;
-        spin_lock_irqsave(&sp_lock, flags);
         cur_task = NULL; 
         wake_up_process(dispatch_thread);
-        spin_unlock_irqrestore(&sp_lock, flags);
         set_task_state(tsk->task, TASK_UNINTERRUPTIBLE);
+        spin_unlock_irqrestore(&sp_lock, flags);
         schedule();
     }
     printk(KERN_ALERT "YIELD MODULE LOADED\n");
