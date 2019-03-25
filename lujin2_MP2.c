@@ -134,7 +134,7 @@ static void mp2_register(unsigned int pid, unsigned int period, unsigned long pr
     curr_task->process_time = process_time;
     
     // Setup the wakeup timer function
-    setup_timer(&curr_task->wakeup_timer, my_timer_function, (unsigned long)curr_task->pid);
+    setup_timer(&(curr_task->wakeup_timer), my_timer_function, (unsigned long)curr_task->pid);
     
     // check for admission_control
     if(!my_admission_control(curr_task)){
@@ -166,7 +166,7 @@ static void mp2_deregister(unsigned int pid) {
     stop = find_mptask_by_pid(pid);
     stop->task_state = SLEEPING;
     del_timer(&(stop->wakeup_timer));
-    list_del(&stop->task_node);
+    list_del(&(stop->task_node));
     kmem_cache_free(mp2_cache, stop);
 
     if(cur_task == stop){
@@ -265,7 +265,7 @@ static void mp2_yield(unsigned int pid) {
         // if next period has not start
         if(tsk->next_period >= jiffies){
             tsk->task_state = SLEEPING;
-            mod_timer(&tsk->wakeup_timer, tsk->next_period);
+            mod_timer(&(tsk->wakeup_timer), tsk->next_period);
             set_task_state(tsk->task, TASK_UNINTERRUPTIBLE);
             cur_task = NULL;
             wake_up_process(dispatch_thread);
