@@ -130,7 +130,7 @@ static void mp2_register(unsigned int pid, unsigned int period, unsigned long pr
     curr_task->task = find_task_by_pid(pid);
     curr_task->pid = pid;
     curr_task->task_period = period;
-    curr_task->next_period = jiffies;
+    curr_task->next_period = 0;
     curr_task->task_state = SLEEPING;
     curr_task->process_time = process_time;
     
@@ -258,8 +258,13 @@ static void mp2_yield(unsigned int pid) {
     unsigned long flags; 
     spin_lock_irqsave(&sp_lock, flags);
     if(tsk != NULL && tsk->task != NULL){
-        printk(KERN_ALERT "tsk->next_period=%u, jiffies is %u\n", tsk->next_period, jiffies);
-        tsk->next_period += msecs_to_jiffies(tsk->task_period);
+        printk(KERN_ALERT "tsk->next_period=%u, jiffies is %u, tsk->task_period is %u\n", tsk->next_period, jiffies, tsk->task_period);
+        // if first time yield
+        if(tsk->next_period == 0){
+            tsk->next_period += jiffies + msecs_to_jiffies(tsk->task_period);
+        }else{
+            tsk->next_period += msecs_to_jiffies(tsk->task_period);
+        }
         printk(KERN_ALERT "tsk->next_period=%u, jiffies is %u\n", tsk->next_period, jiffies);
         // if next period has not start
         if(tsk->next_period >= jiffies){
