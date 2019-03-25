@@ -222,8 +222,10 @@ static int dispatch_thread_function(void){
         // current task has higher pirority/ lower period
         if(tsk != NULL){
             // preempt current task if tsk has higher prioty
-            if(cur_task != NULL && cur_task->task_state == RUNNING){
-                cur_task->task_state = READY;
+            if(cur_task != NULL){
+                if(cur_task->task_state == RUNNING){
+                    cur_task->task_state = READY;
+                }
                 sparam.sched_priority = 0;
                 sched_setscheduler(tsk->task, SCHED_NORMAL, &sparam);
             }
