@@ -10,7 +10,7 @@ void REGISTER(unsigned int pid, unsigned int period, unsigned long process_time)
         perror("Proc file not exists!");
         return;
     }
-    fprintf(f, "R, %u, %u. %lu", pid, period, process_time);
+    fprintf(f, "R, %u, %u, %lu", pid, period, process_time);
     fclose(f);
 }
 
