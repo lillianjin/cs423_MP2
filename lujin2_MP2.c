@@ -184,7 +184,7 @@ static void mp2_deregister(unsigned int pid) {
 This function is used to find the highest priority task
 */
 static mp2_task_struct* find_highest_prioty_tsk(void){
-    mp2_task_struct *curr, *highest;
+    mp2_task_struct *curr, *highest = NULL;
     int min_period = INT_MAX;
     list_for_each_entry(curr, &my_head, task_node) {
         if((highest == NULL || curr->task_period < min_period) && curr->task_state == READY){
@@ -217,6 +217,7 @@ static int dispatch_thread_function(void){
         spin_lock_irqsave(&sp_lock, flags);
         printk(KERN_ALERT "DISPATCHING THREAD STARTS WORKING");
         tsk = find_highest_prioty_tsk();
+        printk(KERN_ALERT "find_highest_prioty_tsk");
         // current task has higher pirority/ lower period
         if(tsk != NULL){
             // preempt current task
