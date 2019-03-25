@@ -62,12 +62,15 @@ Find task struct by pid
 */
 mp2_task_struct* find_mptask_by_pid(unsigned long pid)
 {
+    unsigned long flags; 
+    spin_lock_irqsave(&sp_lock, flags);
     mp2_task_struct* task;
     list_for_each_entry(task, &my_head, task_node) {
         if(task->pid == pid){
             return task;
         }
     }
+    spin_unlock_irqrestore(&sp_lock, flags);
     return NULL;
 }
 
@@ -190,7 +193,7 @@ static mp2_task_struct* find_highest_prioty_tsk(void){
     unsigned long min_period = INT_MAX;
     spin_lock_irqsave(&sp_lock, flags);
     list_for_each_entry(curr, &my_head, task_node) {
-        if(highest == NULL || curr->task_period < min_period){
+        if((highest == NULL || curr->task_period < min_period) && curr->task_state == READY){
             highest = curr;
             min_period = curr->task_period;
         }
@@ -226,18 +229,19 @@ static int dispatch_thread_function(void){
             if(cur_task != NULL && cur_task->task_period > tsk->task_period){
                 cur_task->task_state = READY;
                 sparam.sched_priority = 0;
-                sched_setscheduler(tsk->task, SCHED_NORMAL, 0);
+                sched_setscheduler(tsk->task, SCHED_NORMAL, &sparam);
             }
             // let the higher piority task to run
             tsk->task_state = RUNNING;
             wake_up_process(tsk->task);
-            sched_setscheduler(tsk->task, SCHED_FIFO, 99);
+            sparam.sched_priority = 99;
+            sched_setscheduler(tsk->task, SCHED_FIFO, &sparam);
             cur_task = tsk;
         }else{
             //if no task is ready
             if(cur_task != NULL){
                 sparam.sched_priority = 0;
-                sched_setscheduler(tsk->task, SCHED_NORMAL, 0);
+                sched_setscheduler(tsk->task, SCHED_NORMAL, &sparam);
             }
         }
         spin_unlock_irqrestore(&sp_lock, flags);
@@ -257,9 +261,7 @@ static void mp2_yield(unsigned int pid) {
     #endif
     unsigned long flags; 
     int should_skip;
-    spin_lock_irqsave(&sp_lock, flags);
     mp2_task_struct *tsk = find_mptask_by_pid(pid);
-    spin_unlock_irqrestore(&sp_lock, flags);
 
     if(tsk != NULL && tsk->task != NULL){
         // printk(KERN_ALERT "tsk->next_period=%u, jiffies is %u, tsk->task_period is %u\n", tsk->next_period, jiffies, tsk->task_period);
