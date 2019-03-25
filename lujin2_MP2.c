@@ -271,10 +271,10 @@ static void mp2_yield(unsigned int pid) {
         }
         // only if next period has not start
         printk(KERN_ALERT "tsk->next_period - jiffies is %u\n", tsk->next_period-jiffies);
-        if(should_skip){
-            printk(KERN_ALERT "SKIP THIS TASK\n");
-            return;
-        }
+        // if(should_skip){
+        //     printk(KERN_ALERT "SKIP THIS TASK\n");
+        //     return;
+        // }
         printk(KERN_ALERT "START SLEEPING\n");
         // set the timer and put the task to sleep
         mod_timer(&(tsk->wakeup_timer), tsk->next_period);
