@@ -341,7 +341,7 @@ ssize_t mp2_write (struct file *filp, const char __user *buf, size_t count, loff
     char *buffer = (char *)kmalloc(4096, GFP_KERNEL);
     // mp2_task_struct *new;
     unsigned int pid;
-    unsigned long period;
+    unsigned int period;
     unsigned long process_time;
     unsigned long flags; 
 
@@ -354,13 +354,12 @@ ssize_t mp2_write (struct file *filp, const char __user *buf, size_t count, loff
 
     copy_from_user(buffer, buf, count);
     buffer[count] = '\0';
-    // printk(KERN_ALERT "buffer[0] is: %c", buffer[0]);
 
     if(count > 0){
         switch (buffer[0])
         {
             case REGISTRATION:
-                sscanf(buffer + 3, "%u, %lu, %lu\n", &pid, &period, &process_time);
+                sscanf(buffer + 3, "%u, %u, %lu\n", &pid, &period, &process_time);
                 mp2_register(pid, period, process_time);
                 break;
             case YIELD:
@@ -377,7 +376,7 @@ ssize_t mp2_write (struct file *filp, const char __user *buf, size_t count, loff
         }
     }
 
-    printk(KERN_ALERT "I AM WRITING: %s, %u, %u, %lu\n", buffer, pid, period, process_time);
+    printk(KERN_ALERT "I AM WRITING: %s, parse results: pid %u, period %u, process_time %lu\n", buffer, pid, period, process_time);
 
     kfree(buffer);
     return count;
