@@ -258,11 +258,13 @@ static void mp2_yield(unsigned int pid) {
     unsigned long flags; 
     spin_lock_irqsave(&sp_lock, flags);
     mp2_task_struct *tsk = find_mptask_by_pid(pid);
+    spin_unlock_irqrestore(&sp_lock, flags);
+
     if(tsk != NULL && tsk->task != NULL){
         // printk(KERN_ALERT "tsk->next_period=%u, jiffies is %u, tsk->task_period is %u\n", tsk->next_period, jiffies, tsk->task_period);
         // if first time yield
         if(tsk->next_period == 0){
-            tsk->next_period += jiffies + msecs_to_jiffies(tsk->task_period);
+            tsk->next_period = jiffies + msecs_to_jiffies(tsk->task_period);
         }else{
             tsk->next_period += msecs_to_jiffies(tsk->task_period);
         }
@@ -274,8 +276,11 @@ static void mp2_yield(unsigned int pid) {
             // set the timer and put the task to sleep
             mod_timer(&(tsk->wakeup_timer), tsk->next_period);
             tsk->task_state = SLEEPING;
-            set_task_state(tsk->task, TASK_UNINTERRUPTIBLE);
+            spin_lock_irqsave(&sp_lock, flags);
+            cur_task = NULL;
+            spin_unlock_irqrestore(&sp_lock, flags);
             wake_up_process(dispatch_thread);
+            set_task_state(tsk->task, TASK_UNINTERRUPTIBLE);
             schedule();
         }else{
             printk(KERN_ALERT "SKIP THIS TASK\n");
@@ -283,7 +288,6 @@ static void mp2_yield(unsigned int pid) {
             return;
         }
     }
-    spin_unlock_irqrestore(&sp_lock, flags);
     printk(KERN_ALERT "YIELD MODULE LOADED\n");
 }
 
