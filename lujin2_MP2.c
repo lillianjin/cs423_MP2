@@ -88,6 +88,7 @@ t: user defined data
     }
     wake_up_process(dispatch_thread);
     spin_unlock_irqrestore(&sp_lock, flags);
+    printk(KERN_ALERT "TIMER RUNNING FINISHED");
  }
 
 
@@ -162,20 +163,19 @@ static void mp2_deregister(unsigned int pid) {
     #endif
     mp2_task_struct *stop;
     unsigned long flags; 
-    spin_lock_irqsave(&sp_lock, flags);
 
+    spin_lock_irqsave(&sp_lock, flags);
     stop = find_mptask_by_pid(pid);
     stop->task_state = SLEEPING;
     del_timer(&(stop->wakeup_timer));
     list_del(&(stop->task_node));
     kmem_cache_free(mp2_cache, stop);
-
     if(cur_task == stop){
         cur_task = NULL;
         wake_up_process(dispatch_thread);
     }
-
     spin_unlock_irqrestore(&sp_lock, flags);
+
     printk(KERN_ALERT "DEREGISTRATION MODULE LOADED\n");
 
 }
