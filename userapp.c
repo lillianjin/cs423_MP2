@@ -125,7 +125,7 @@ int main(int argc, char* argv[]){
 
     // YIELD
     // gettimeofday(&init, NULL);
-    printf("Task %u yield begins.\n", pid);
+    // printf("Task %u yield begins.\n", pid);
     YIELD(pid);
     t = 0;
     while(t < num){
@@ -134,6 +134,7 @@ int main(int argc, char* argv[]){
         do_job(process_time);
         gettimeofday(&end, NULL);
         printf("Job %d of task %u finished, end time:    \t%llu.%llu s.\n", t, pid, (unsigned long long)end.tv_sec, (unsigned long long)end.tv_usec);
+        printf("Job %d of task %u yield begins.\n", t, pid);
         YIELD(pid);
         t++;
     }

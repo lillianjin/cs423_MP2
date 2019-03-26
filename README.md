@@ -4,8 +4,13 @@
 1) mp2_init\
 Load the module and create proc directory and status file. \
 This function requires to initialize proc file directory, slab cache, spinlock, and dispatching thread.\\
+
 2) mp2_exit\
-Unload the proc 
+Unload the module and remove proc directory and status file.\
+This function requires to free all the memories used glabally or stop the process, including dispatching thread, task cache and file directory.\\
+
+3) mp2_register\
+Create and insert mp
 
 ## Command to run the program
 ### Basic Functions
