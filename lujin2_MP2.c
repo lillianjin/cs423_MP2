@@ -77,7 +77,7 @@ t: user defined data
 */
  static void my_timer_function(unsigned long pid) {
     unsigned long flags; 
-    printk(KERN_ALERT "TIMER RUNNING, pid is %u\n", pid);
+    // printk(KERN_ALERT "TIMER RUNNING, pid is %u\n", pid);
     spin_lock_irqsave(&sp_lock, flags);
     mp2_task_struct *tsk = find_mptask_by_pid(pid);
     if(tsk == NULL){
@@ -89,7 +89,7 @@ t: user defined data
     }
     wake_up_process(dispatch_thread);
     spin_unlock_irqrestore(&sp_lock, flags);
-    printk(KERN_ALERT "TIMER RUNNING FINISHED");
+    // printk(KERN_ALERT "TIMER RUNNING FINISHED");
  }
 
 
@@ -213,7 +213,7 @@ static int dispatch_thread_function(void){
     while(1){
         tsk = NULL;
         // put dispatching thread to sleep
-        set_current_state(TASK_INTERRUPTIBLE);
+        // set_current_state(TASK_INTERRUPTIBLE);
         schedule();
         // check if the kthread can return
         if(kthread_should_stop()){
