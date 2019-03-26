@@ -126,7 +126,7 @@ This function allows the application to notify to our kernel module its intent t
 */
 static void mp2_register(unsigned int pid, unsigned int period, unsigned long process_time) {
     #ifdef DEBUG
-    printk(KERN_ALERT "REGISTRATION MODULE LOADING\n");
+    printk(KERN_ALERT "TASK %u REGISTRATION MODULE LOADING\n", pid);
     #endif
     // initiate and allocate, use slab allocator
     mp2_task_struct *curr_task = (mp2_task_struct *) kmem_cache_alloc(mp2_cache, GFP_KERNEL);
@@ -153,7 +153,7 @@ static void mp2_register(unsigned int pid, unsigned int period, unsigned long pr
     spin_lock_irqsave(&sp_lock, flags);
     list_add(&(curr_task->task_node), &my_head);
     spin_unlock_irqrestore(&sp_lock, flags);
-    printk(KERN_ALERT "REGISTRATION MODULE LOADED\n");
+    printk(KERN_ALERT "TASK %u REGISTRATION MODULE LOADED\n", pid);
 }
 
 
@@ -162,7 +162,7 @@ This function allows the application to notify the RMS scheduler that the applic
 */
 static void mp2_deregister(unsigned int pid) {
     #ifdef DEBUG
-    printk(KERN_ALERT "DEREGISTRATION MODULE LOADING\n");
+    printk(KERN_ALERT "TASK %u DEREGISTRATION MODULE LOADING\n", pid);
     #endif
     mp2_task_struct *stop;
     unsigned long flags; 
@@ -180,7 +180,7 @@ static void mp2_deregister(unsigned int pid) {
     spin_unlock_irqrestore(&sp_lock, flags);
     wake_up_process(dispatch_thread);
 
-    printk(KERN_ALERT "DEREGISTRATION MODULE LOADED\n");
+    printk(KERN_ALERT "TASK %u DEREGISTRATION MODULE LOADED\n", pid);
 
 }
  
@@ -421,11 +421,9 @@ int __init mp2_init(void)
 
    //Create proc directory "/proc/mp2/" using proc_dir(dir, parent)
    proc_dir = proc_mkdir(DIRECTORY, NULL);
-   printk(KERN_ALERT "proc_mkdir\n");
 
    //Create file entry "/proc/mp2/status/" using proc_create(name, mode, parent, proc_fops)
    proc_entry = proc_create(FILENAME, 0666, proc_dir, &file_fops);
-   printk(KERN_ALERT "proc_create\n");
 
    // init a new cache of size sizeof(mp2_task_struct)
    mp2_cache = kmem_cache_create("mp2_cache", sizeof(mp2_task_struct), 0, SLAB_HWCACHE_ALIGN, NULL);
