@@ -167,6 +167,7 @@ static void mp2_deregister(unsigned int pid) {
     spin_lock_irqsave(&sp_lock, flags);
     stop = find_mptask_by_pid(pid);
     stop->task_state = SLEEPING;
+    set_task_state(stop->task, TASK_UNINTERRUPTIBLE);
     if(cur_task != NULL && cur_task->pid == pid){
         cur_task = NULL;
     }
