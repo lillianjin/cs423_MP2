@@ -427,9 +427,11 @@ int __init mp2_init(void)
 
    //Create proc directory "/proc/mp2/" using proc_dir(dir, parent)
    proc_dir = proc_mkdir(DIRECTORY, NULL);
+   printk(KERN_ALERT "proc_mkdir\n");
 
    //Create file entry "/proc/mp2/status/" using proc_create(name, mode, parent, proc_fops)
    proc_entry = proc_create(FILENAME, 0666, proc_dir, &file_fops);
+   printk(KERN_ALERT "proc_create\n");
 
    // init a new cache of size sizeof(mp2_task_struct)
    mp2_cache = kmem_cache_create("mp2_cache", sizeof(mp2_task_struct), 0, SLAB_HWCACHE_ALIGN, NULL);
