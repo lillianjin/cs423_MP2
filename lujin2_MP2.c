@@ -205,7 +205,7 @@ static mp2_task_struct* find_highest_prioty_tsk(void){
 /*
 This function dispatches thread to switch next highest priority ready task
 */
-int dispatch_thread_function(void){
+int dispatch_thread_function(void *data){
     // printk(KERN_ALERT "DISPATCHING THREAD FUNCTION START");
     mp2_task_struct *tsk = NULL;
     unsigned long flags; 
