@@ -26,14 +26,14 @@ Fetch task pid, period and process time from userapp.\
 This function requires to divide the input into three different cases(R, D, Y).\\
 
 7) mp2_read()\
-Read task pid, period and process time from /proc.\\
+Read task pid, period and process time from /proc.\
 
 8) dispatch_thread_function()\
 Help to dispatch thread in the linked list and choose a highest prioty ready task to preempt the current executing task.\
-This function requirese to find the highest prioty ready task first, and if there is a current running task, we need to change the corresponding states of both tasks and adjust their priority.\\
+This function requirese to find the highest prioty ready task first, and if there is a current running task, we need to change the corresponding states of both tasks and adjust their priority.\
 
 9) admission_control()\
-Sum up the total raio of process time divided by task period, then add the ratio of new task. If the (overall ratio * 1000) <= 693, and this new task passes the check and can be registered.\\ 
+Sum up the total raio of process time divided by task period, then add the ratio of new task. If the (overall ratio * 1000) <= 693, and this new task passes the check and can be registered.\
 
 10) userapp.c\
 Read in the user command and do the whole process automatically. This app will print each step and execution time of doing the job.\\
@@ -49,7 +49,7 @@ Read in the user command and do the whole process automatically. This app will p
 
 3) Run from user program
 ```./userapp [task_period] [task_process_time] [number_of_jobs] & ./userapp [task_period] [task_process_time] [number_of_jobs]```
-Mention that the [task_process] should be the same, as we compare the prioty of tasks by their periods. As a result, the input of [task_process] should remain the same.\\
+Mention that the [task_process] should be the same, as we compare the prioty of tasks by their periods. As a result, the input of [task_process] should remain the same.\
 
 4) Remove the module\
 ```sudo rmmod lujin2_MP2```
