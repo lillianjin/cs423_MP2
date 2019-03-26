@@ -234,6 +234,7 @@ static int dispatch_thread_function(void){
                     set_task_state(cur_task->task, TASK_INTERRUPTIBLE);
                     sparam1.sched_priority = 0;
                     sched_setscheduler(tsk->task, SCHED_NORMAL, &sparam1);
+                    cur_task = NULL;
                 }
             }
             // let the higher piority task to run
@@ -244,10 +245,10 @@ static int dispatch_thread_function(void){
             cur_task = tsk;
         }else{
             // if no task is ready
-            if(cur_task != NULL){
-                sparam1.sched_priority = 0;
-                sched_setscheduler(tsk->task, SCHED_NORMAL, &sparam1);
-            }
+            // if(cur_task != NULL){
+            //     sparam1.sched_priority = 0;
+            //     sched_setscheduler(tsk->task, SCHED_NORMAL, &sparam1);
+            // }
             printk(KERN_ALERT "NO TASK FOUND");
         }
         spin_unlock_irqrestore(&sp_lock, flags);
