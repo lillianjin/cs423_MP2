@@ -67,19 +67,17 @@ int my_read_status(unsigned int pid){
 
 void do_job(unsigned long time){
     long long res = 1;
-    struct timeval start, end;
-    unsigned long long t0, t1;
-    gettimeofday(&start, NULL);
-    t0 = (unsigned long long)start.tv_sec * 1000000 + start.tv_usec;
+    clock_t t0 = clock(), t1;
+    // unsigned long long t0, t1;
+    // t0 = (unsigned long long)start.tv_sec * 1000000 + start.tv_usec;
+    t1 = t0 + time/1000 * CLOCK_PER_SEC;
 	for(int i=0; i<100000000; i++){
 		for(int j=20; j > 0; j--){
 			res = res * j;
-            gettimeofday(&end, NULL);
-            t1 = (unsigned long long)end.tv_sec * 1000000 + end.tv_usec;
-            if(t1 - t0 >= time*1000 ){
-                return;
-            }
 		}
+        if(clock() > t1){
+            break;
+        }
 	}
 }
 

@@ -10,6 +10,7 @@
 #include <linux/init.h>
 #include <linux/timer.h>
 #include <linux/workqueue.h>
+#include <linux/spinlock.h>
 #include <linux/mutex.h>
 #include "mp2_given.h"
 
@@ -245,10 +246,10 @@ static int dispatch_thread_function(void){
             cur_task = tsk;
         }else{
             // if no task is ready
-            // if(cur_task != NULL){
-            //     sparam1.sched_priority = 0;
-            //     sched_setscheduler(tsk->task, SCHED_NORMAL, &sparam1);
-            // }
+            if(cur_task != NULL){
+                sparam1.sched_priority = 0;
+                sched_setscheduler(tsk->task, SCHED_NORMAL, &sparam1);
+            }
             printk(KERN_ALERT "NO TASK FOUND");
         }
         spin_unlock_irqrestore(&sp_lock, flags);
