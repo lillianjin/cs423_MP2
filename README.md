@@ -7,23 +7,23 @@ This function requires to initialize proc file directory, slab cache, spinlock, 
 
 2) mp2_exit\
 Unload the module and remove proc directory and status file.\
-This function requires to free all the memories used glabally or stop the process, including dispatching thread, task cache and file directory.\\
+This function requires to free all the memories used glabally or stop the process, including dispatching thread, task cache and file directory.\
 
 3) mp2_register\
 Create and insert task struct into the process list.\
-This function requires to initialize each variables of the task struct and only register the task which pass the admission control check.\\
+This function requires to initialize each variables of the task struct and only register the task which pass the admission control check.\
 
 4) mp2_yield\
 Make the process yield for next process.\
-This function requires to update timer, wake up the dispatching thread and make high-prioty task to sleep until next period starts.\\
+This function requires to update timer, wake up the dispatching thread and make high-prioty task to sleep until next period starts.\
 
 5) mp2_deregister\
 Destroy the task struct from the process list.\
-This function requires to remove the corresponding task from process task list and release memory of all data structures.\\
+This function requires to remove the corresponding task from process task list and release memory of all data structures.\
 
 6) mp2_write()\
 Fetch task pid, period and process time from userapp.\
-This function requires to divide the input into three different cases(R, D, Y).\\
+This function requires to divide the input into three different cases(R, D, Y).\
 
 7) mp2_read()\
 Read task pid, period and process time from /proc.\
@@ -36,15 +36,15 @@ This function requirese to find the highest prioty ready task first, and if ther
 Sum up the total raio of process time divided by task period, then add the ratio of new task. If the (overall ratio * 1000) <= 693, and this new task passes the check and can be registered.\
 
 10) userapp.c\
-Read in the user command and do the whole process automatically. This app will print each step and execution time of doing the job.\\
+Read in the user command and do the whole process automatically. This app will print each step and execution time of doing the job.\
 
 ## Command to run the program
 ### Basic Functions
-1) Compile the modules and user_app\
+1) Compile the modules and user_app
 ```make modules```\
 ```make app```
 
-2) Insert compiled module into the kernel\
+2) Insert compiled module into the kernel
 ```sudo insmod lujin2_MP2.ko```
 
 3) Run from user program
