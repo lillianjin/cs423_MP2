@@ -177,7 +177,9 @@ static void mp2_deregister(unsigned int pid) {
     del_timer(&(stop->wakeup_timer));
     list_del(&(stop->task_node));
     kmem_cache_free(mp2_cache, stop);
+    wake_up_process(dispatch_thread);
     spin_unlock_irqrestore(&sp_lock, flags);
+
 
     printk(KERN_ALERT "DEREGISTRATION MODULE LOADED\n");
 
