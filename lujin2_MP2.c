@@ -213,7 +213,7 @@ static int dispatch_thread_function(void){
     while(1){
         tsk = NULL;
         // put dispatching thread to sleep
-        // set_current_state(TASK_INTERRUPTIBLE);
+        set_current_state(TASK_INTERRUPTIBLE);
         schedule();
         // check if the kthread can return
         if(kthread_should_stop()){
