@@ -85,6 +85,7 @@ t: user defined data
     }
     if(tsk->task_state == SLEEPING){
         tsk->task_state = READY;
+        set_task_state(tsk->task, TASK_INTERRUPTIBLE);
     }
     wake_up_process(dispatch_thread);
     spin_unlock_irqrestore(&sp_lock, flags);
@@ -133,6 +134,7 @@ static void mp2_register(unsigned int pid, unsigned int period, unsigned long pr
     curr_task->task_period = period;
     curr_task->next_period = 0;
     curr_task->task_state = SLEEPING;
+    set_task_state(curr_task->task, TASK_UNINTERRUPTIBLE);
     curr_task->process_time = process_time;
     
     // Setup the wakeup timer function
@@ -289,9 +291,9 @@ static void mp2_yield(unsigned int pid) {
         spin_lock_irqsave(&sp_lock, flags);
         mod_timer(&(tsk->wakeup_timer), tsk->next_period);
         tsk->task_state = SLEEPING;
+        set_task_state(tsk->task, TASK_UNINTERRUPTIBLE);
         cur_task = NULL; 
         wake_up_process(dispatch_thread);
-        set_task_state(tsk->task, TASK_UNINTERRUPTIBLE);
         spin_unlock_irqrestore(&sp_lock, flags);
         schedule();
     }

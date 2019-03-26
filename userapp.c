@@ -138,7 +138,7 @@ int main(int argc, char* argv[]){
         YIELD(pid);
         t++;
     }
-    printf("Task %u yield succeeded.\n", pid);
+    // printf("Task %u yield succeeded.\n", pid);
 
     
     // DEREGISTERATION
