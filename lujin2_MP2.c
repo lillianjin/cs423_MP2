@@ -230,14 +230,12 @@ int dispatch_thread_function(void *data){
         // current task has higher pirority/ lower period
         if(tsk != NULL){
             // preempt current task if tsk has higher prioty
-            if(cur_task != NULL){
-                if(cur_task->task_state == RUNNING && cur_task->task_period > tsk->task_period){
-                    cur_task->task_state = READY;
-                    set_task_state(cur_task->task, TASK_INTERRUPTIBLE);
-                    sparam1.sched_priority = 0;
-                    sched_setscheduler(tsk->task, SCHED_NORMAL, &sparam1);
-                    cur_task = NULL;
-                }
+            if(cur_task != NULL && cur_task->task_state == RUNNING && cur_task->task_period > tsk->task_period){
+                cur_task->task_state = READY;
+                set_task_state(cur_task->task, TASK_INTERRUPTIBLE);
+                sparam1.sched_priority = 0;
+                sched_setscheduler(tsk->task, SCHED_NORMAL, &sparam1);
+                cur_task = NULL;
             }
             // let the higher piority task to run
             tsk->task_state = RUNNING;
@@ -248,7 +246,6 @@ int dispatch_thread_function(void *data){
         }
         spin_unlock_irqrestore(&sp_lock, flags);
     }
-
     return 0;
 }
 
