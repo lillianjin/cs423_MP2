@@ -70,7 +70,7 @@ void do_job(unsigned long time){
     clock_t t0 = clock(), t1;
     // unsigned long long t0, t1;
     // t0 = (unsigned long long)start.tv_sec * 1000000 + start.tv_usec;
-    t1 = t0 + time/1000 * CLOCK_PER_SEC;
+    t1 = t0 + time/1000 * CLOCKS_PER_SEC;
 	for(int i=0; i<100000000; i++){
 		for(int j=20; j > 0; j--){
 			res = res * j;
