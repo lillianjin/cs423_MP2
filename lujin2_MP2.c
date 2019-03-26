@@ -205,7 +205,7 @@ static mp2_task_struct* find_highest_prioty_tsk(void){
 /*
 This function dispatches thread to switch next highest priority ready task
 */
-static int dispatch_thread_function(void){
+int dispatch_thread_function(void){
     // printk(KERN_ALERT "DISPATCHING THREAD FUNCTION START");
     mp2_task_struct *tsk = NULL;
     unsigned long flags; 
@@ -364,7 +364,6 @@ ssize_t mp2_write (struct file *filp, const char __user *buf, size_t count, loff
     unsigned int pid;
     unsigned int period;
     unsigned long process_time;
-    unsigned long flags; 
 
     memset(buffer, 0, 4096);
     // if the lengh of message is larger than buffer size or the file is already written, return
